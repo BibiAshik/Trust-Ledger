@@ -20,9 +20,9 @@ services:
       mysql:
         condition: service_healthy
     environment:
-      MYSQL_URL: jdbc:mysql://mysql:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      DATABASE_URL: jdbc:mysql://mysql:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root
     ports:
       - "8080:8080"
 

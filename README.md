@@ -46,12 +46,14 @@ Trust Ledger is a comprehensive, realistic full-stack web application built to m
    ```sql
    CREATE DATABASE trust_ledger;
    ```
-3. Either update `src/main/resources/application.properties` or set these environment variables:
+3. For local MySQL, set these environment variables:
    ```properties
-   MYSQL_URL=jdbc:mysql://localhost:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-   MYSQL_USER=your_mysql_username
-   MYSQL_PASSWORD=your_mysql_password
+   DATABASE_URL=jdbc:mysql://localhost:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+   DATABASE_USERNAME=your_mysql_username
+   DATABASE_PASSWORD=your_mysql_password
    ```
+
+If these variables are not set, the application uses an embedded H2 database for quick demo/deployment testing.
 
 ## How to Run the Project
 
@@ -81,9 +83,9 @@ Or build and run with Docker:
 ```bash
 docker build -t trust-ledger .
 docker run -p 8080:8080 \
-  -e MYSQL_URL="jdbc:mysql://host.docker.internal:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC" \
-  -e MYSQL_USER="root" \
-  -e MYSQL_PASSWORD="root" \
+  -e DATABASE_URL="jdbc:mysql://host.docker.internal:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC" \
+  -e DATABASE_USERNAME="root" \
+  -e DATABASE_PASSWORD="root" \
   trust-ledger
 ```
 
