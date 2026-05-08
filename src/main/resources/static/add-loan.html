@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Add Loan</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>Add New Loan</h2>
+        </div>
+        
+        <div class="form-container">
+            <form id="loanForm">
+                <div class="form-group">
+                    <label>Select Customer</label>
+                    <select name="customer.id" id="customerSelect" required>
+                        <option value="">-- Loading Customers --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Item Type</label>
+                    <input type="text" name="itemType" placeholder="e.g. Gold Chain" required>
+                </div>
+                <div class="form-group">
+                    <label>Weight (grams)</label>
+                    <input type="number" step="0.01" name="weight" required>
+                </div>
+                <div class="form-group">
+                    <label>Purity (e.g. 22K)</label>
+                    <input type="text" name="purity" required>
+                </div>
+                <div class="form-group">
+                    <label>Estimated Value (Rs.)</label>
+                    <input type="number" step="0.01" name="estimatedValue" required>
+                </div>
+                <div class="form-group">
+                    <label>Loan Amount (Rs.)</label>
+                    <input type="number" step="0.01" name="loanAmount" required>
+                </div>
+                <div class="form-group">
+                    <label>Monthly Interest (%)</label>
+                    <input type="number" step="0.01" name="interestPercentage" required>
+                </div>
+                <div class="form-group">
+                    <label>Loan Date</label>
+                    <input type="date" name="loanDate" id="loanDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="date" name="dueDate" required>
+                </div>
+                <button type="submit" class="btn">Create Loan</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        document.getElementById('loanDate').valueAsDate = new Date();
+        
+        async function loadCustomers() {
+            const customers = await fetchApi('/api/customers');
+            const select = document.getElementById('customerSelect');
+            select.innerHTML = '<option value="">-- Select Customer --</option>';
+            if (customers) {
+                customers.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = `${c.name} (${c.phoneNumber})`;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        document.getElementById('loanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            // Convert to nested object for customer
+            const data = {
+                customer: { id: parseInt(formData.get('customer.id')) },
+                itemType: formData.get('itemType'),
+                weight: parseFloat(formData.get('weight')),
+                purity: formData.get('purity'),
+                estimatedValue: parseFloat(formData.get('estimatedValue')),
+                loanAmount: parseFloat(formData.get('loanAmount')),
+                interestPercentage: parseFloat(formData.get('interestPercentage')),
+                loanDate: formData.get('loanDate'),
+                dueDate: formData.get('dueDate')
+            };
+            
+            try {
+                const saved = await fetchApi('/api/loans', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (saved) {
+                    window.location.href = './loans.html';
+                } else {
+                    alert('Error creating loan');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadCustomers);
+    </script>
+</body>
+</html>

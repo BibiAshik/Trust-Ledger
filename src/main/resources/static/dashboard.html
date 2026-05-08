@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Dashboard</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>Dashboard</h2>
+            <div>Welcome, <span id="username-display">Admin</span></div>
+        </div>
+        
+        <div class="dashboard-cards" id="summaryCards">
+            <div class="card"><h3>Total Customers</h3><div class="value" id="val-customers">0</div></div>
+            <div class="card"><h3>Active Loans</h3><div class="value" id="val-active">0</div></div>
+            <div class="card"><h3>Overdue Loans</h3><div class="value" id="val-overdue" style="color:var(--danger)">0</div></div>
+            <div class="card"><h3>Auction Eligible</h3><div class="value" id="val-auction" style="color:var(--danger)">0</div></div>
+            <div class="card"><h3>Total Interest</h3><div class="value" id="val-interest">Rs. 0</div></div>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        async function loadSummary() {
+            const data = await fetchApi('/api/dashboard/summary');
+            if (data) {
+                document.getElementById('val-customers').innerText = data.totalCustomers;
+                document.getElementById('val-active').innerText = data.activeLoans;
+                document.getElementById('val-overdue').innerText = data.overdueLoans;
+                document.getElementById('val-auction').innerText = data.auctionEligibleLoans;
+                document.getElementById('val-interest').innerText = formatCurrency(data.totalInterestCollected);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadSummary);
+    </script>
+</body>
+</html>

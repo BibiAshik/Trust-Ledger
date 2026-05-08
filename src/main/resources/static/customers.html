@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Customers</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>Customers</h2>
+            <a href="./add-customer.html" class="btn">Add Customer</a>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Aadhaar</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        async function loadCustomers() {
+            const customers = await fetchApi('/api/customers');
+            const tbody = document.getElementById('customersTable');
+            tbody.innerHTML = '';
+            if (customers) {
+                customers.forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${c.id}</td>
+                        <td>${c.name}</td>
+                        <td>${c.phoneNumber}</td>
+                        <td>${c.aadhaarNumber || '-'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadCustomers);
+    </script>
+</body>
+</html>

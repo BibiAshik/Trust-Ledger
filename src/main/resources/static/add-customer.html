@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Add Customer</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>Add Customer</h2>
+        </div>
+        
+        <div class="form-container">
+            <form id="customerForm">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phoneNumber" required>
+                </div>
+                <div class="form-group">
+                    <label>Aadhaar Number</label>
+                    <input type="text" name="aadhaarNumber">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn">Save Customer</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        document.getElementById('customerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            
+            try {
+                const saved = await fetchApi('/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (saved) {
+                    window.location.href = './customers.html';
+                } else {
+                    alert('Error saving customer');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        });
+    </script>
+</body>
+</html>

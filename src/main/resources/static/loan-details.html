@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Loan Details</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .section { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;}
+        .note-box { background: #f9fbfd; padding: 10px; margin-bottom: 10px; border-left: 3px solid var(--accent-gold); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>Loan Details: #<span id="loanIdDisplay"></span></h2>
+            <div>
+                <a href="./receipt.html?id=" id="printBtn" class="btn" style="background:#34495e;">Print Receipt</a>
+                <span id="statusBadge" class="status-badge" style="font-size: 16px;"></span>
+            </div>
+        </div>
+        
+        <div class="details-grid">
+            <div class="section">
+                <h3>Customer Information</h3>
+                <p><strong>Name:</strong> <span id="cName"></span></p>
+                <p><strong>Phone:</strong> <span id="cPhone"></span></p>
+                <p><strong>Address:</strong> <span id="cAddress"></span></p>
+                <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
+                <h3>Item Details</h3>
+                <p><strong>Item:</strong> <span id="lItem"></span></p>
+                <p><strong>Weight:</strong> <span id="lWeight"></span>g | <strong>Purity:</strong> <span id="lPurity"></span></p>
+                <p><strong>Est. Value:</strong> <span id="lEst"></span></p>
+            </div>
+            
+            <div class="section">
+                <h3>Financials</h3>
+                <p><strong>Loan Amount:</strong> <span id="lAmount"></span></p>
+                <p><strong>Remaining Principal:</strong> <span id="lPrincipal" style="font-weight:bold; color:var(--text-main)"></span></p>
+                <p><strong>Interest Rate:</strong> <span id="lRate"></span>% per month</p>
+                <p><strong>Pending Interest:</strong> <span id="lInterest" style="color:var(--danger)"></span></p>
+                <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
+                <p><strong>Loan Date:</strong> <span id="lDate"></span></p>
+                <p><strong>Due Date:</strong> <span id="lDueDate"></span></p>
+            </div>
+        </div>
+
+        <div class="details-grid">
+            <div class="section">
+                <h3>Make Payment</h3>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Payment Type</label>
+                        <select name="type" required>
+                            <option value="INTEREST">Interest Only</option>
+                            <option value="PRINCIPAL">Partial Principal</option>
+                            <option value="FULL_CLOSURE">Full Closure</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (Rs.)</label>
+                        <input type="number" step="0.01" name="amount" required>
+                    </div>
+                    <button type="submit" class="btn">Process Payment</button>
+                </form>
+                
+                <h3 style="margin-top: 20px;">Payment History</h3>
+                <table style="font-size: 14px;">
+                    <thead><tr><th>Date</th><th>Type</th><th>Amount</th></tr></thead>
+                    <tbody id="paymentHistory"></tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3>Notes</h3>
+                <form id="noteForm" style="margin-bottom: 15px;">
+                    <textarea name="noteText" rows="2" style="width:100%; padding: 5px;" required></textarea>
+                    <button type="submit" class="btn" style="padding: 5px 10px; font-size: 14px; margin-top:5px;">Add Note</button>
+                </form>
+                <div id="notesContainer" style="max-height: 200px; overflow-y:auto;"></div>
+                
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                
+                <h3>Renew / Extend Loan</h3>
+                <form id="renewForm">
+                    <div class="form-group">
+                        <label>New Due Date</label>
+                        <input type="date" name="newDueDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason</label>
+                        <input type="text" name="reason" placeholder="e.g. Customer request" required>
+                    </div>
+                    <button type="submit" class="btn">Extend Loan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const loanId = urlParams.get('id');
+
+        async function loadLoanDetails() {
+            const loan = await fetchApi(`/api/loans/${loanId}`);
+            if (loan) {
+                document.getElementById('loanIdDisplay').innerText = loan.id;
+                document.getElementById('printBtn').href = `/receipt.html?id=${loan.id}`;
+                
+                const sb = document.getElementById('statusBadge');
+                sb.innerText = loan.status;
+                sb.className = `status-badge status-${loan.status}`;
+                
+                if (loan.customer) {
+                    document.getElementById('cName').innerText = loan.customer.name;
+                    document.getElementById('cPhone').innerText = loan.customer.phoneNumber;
+                    document.getElementById('cAddress').innerText = loan.customer.address || '-';
+                }
+                
+                document.getElementById('lItem').innerText = loan.itemType;
+                document.getElementById('lWeight').innerText = loan.weight;
+                document.getElementById('lPurity').innerText = loan.purity;
+                document.getElementById('lEst').innerText = formatCurrency(loan.estimatedValue);
+                
+                document.getElementById('lAmount').innerText = formatCurrency(loan.loanAmount);
+                document.getElementById('lPrincipal').innerText = formatCurrency(loan.remainingPrincipal);
+                document.getElementById('lRate').innerText = loan.interestPercentage;
+                document.getElementById('lInterest').innerText = formatCurrency(loan.totalPendingInterest);
+                
+                document.getElementById('lDate').innerText = loan.loanDate;
+                document.getElementById('lDueDate').innerText = loan.dueDate;
+            }
+        }
+
+        async function loadPayments() {
+            const payments = await fetchApi(`/api/payments/loan/${loanId}`);
+            const tbody = document.getElementById('paymentHistory');
+            tbody.innerHTML = '';
+            if (payments) {
+                payments.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${new Date(p.paymentDate).toLocaleDateString()}</td><td>${p.type}</td><td>${formatCurrency(p.amount)}</td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        async function loadNotes() {
+            const notes = await fetchApi(`/api/loans/${loanId}/notes`);
+            const container = document.getElementById('notesContainer');
+            container.innerHTML = '';
+            if (notes) {
+                notes.forEach(n => {
+                    const d = document.createElement('div');
+                    d.className = 'note-box';
+                    d.innerHTML = `<small style="color:var(--text-muted)">${new Date(n.createdAt).toLocaleDateString()}</small><br>${n.noteText}`;
+                    container.appendChild(d);
+                });
+            }
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            const payment = await fetchApi(`/api/payments/loan/${loanId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (payment) {
+                e.target.reset();
+                loadLoanDetails();
+                loadPayments();
+            } else {
+                alert('Payment failed.');
+            }
+        });
+
+        document.getElementById('noteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            const note = await fetchApi(`/api/loans/${loanId}/notes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (note) {
+                e.target.reset();
+                loadNotes();
+            }
+        });
+
+        document.getElementById('renewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            const renewed = await fetchApi(`/api/loans/${loanId}/renew`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (renewed) {
+                e.target.reset();
+                loadLoanDetails();
+                loadNotes();
+                alert('Loan extended successfully');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (loanId) {
+                loadLoanDetails();
+                loadPayments();
+                loadNotes();
+            } else {
+                window.location.href = './loans.html';
+            }
+        });
+    </script>
+</body>
+</html>

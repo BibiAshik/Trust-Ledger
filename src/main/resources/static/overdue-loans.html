@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Overdue Loans</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./overdue-loans.html">Overdue Loans</a></li>
+            <li><a href="./closed-loans.html">Closed Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>Overdue & Auction Eligible Loans</h2>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Customer</th>
+                        <th>Item</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="loansTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        async function loadLoans() {
+            const overdue = await fetchApi('/api/loans/status/OVERDUE');
+            const auction = await fetchApi('/api/loans/status/AUCTION_ELIGIBLE');
+            const loans = [...(overdue || []), ...(auction || [])];
+            
+            const tbody = document.getElementById('loansTable');
+            tbody.innerHTML = '';
+            loans.forEach(l => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${l.id}</td>
+                    <td>${l.customer ? l.customer.name : 'Unknown'}</td>
+                    <td>${l.itemType} (${l.weight}g)</td>
+                    <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+                    <td><a href="./loan-details.html?id=${l.id}" class="btn" style="padding: 5px 10px; font-size: 12px;">View</a></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', loadLoans);
+    </script>
+</body>
+</html>

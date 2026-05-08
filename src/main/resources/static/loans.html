@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Loans</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">Trust Ledger</div>
+        <ul class="nav-links">
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./customers.html">Customers</a></li>
+            <li><a href="./loans.html">All Loans</a></li>
+            <li><a href="./overdue-loans.html">Overdue Loans</a></li>
+            <li><a href="./closed-loans.html">Closed Loans</a></li>
+            <li><a href="./add-loan.html">New Loan</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h2>All Loans</h2>
+            <a href="./add-loan.html" class="btn">Add Loan</a>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Customer</th>
+                        <th>Item</th>
+                        <th>Principal</th>
+                        <th>Interest Due</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="loansTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="./js/app.js"></script>
+    <script>
+        async function loadLoans() {
+            const loans = await fetchApi('/api/loans');
+            const tbody = document.getElementById('loansTable');
+            tbody.innerHTML = '';
+            if (loans) {
+                loans.forEach(l => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${l.id}</td>
+                        <td>${l.customer ? l.customer.name : 'Unknown'}</td>
+                        <td>${l.itemType} (${l.weight}g)</td>
+                        <td>${formatCurrency(l.remainingPrincipal)}</td>
+                        <td>${formatCurrency(l.totalPendingInterest)}</td>
+                        <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+                        <td><a href="./loan-details.html?id=${l.id}" class="btn" style="padding: 5px 10px; font-size: 12px;">View</a></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadLoans);
+    </script>
+</body>
+</html>

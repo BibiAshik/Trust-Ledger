@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Ledger - Receipt</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body { background: white; padding: 40px; justify-content: center; align-items: flex-start; }
+        .receipt-card { width: 100%; max-width: 600px; margin: 0 auto; border: 1px solid #ccc; padding: 30px; }
+        .receipt-header { text-align: center; margin-bottom: 30px; border-bottom: 2px dashed #ccc; padding-bottom: 20px;}
+        .receipt-header h1 { margin-bottom: 5px; color: #333; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        @media print {
+            .no-print { display: none !important; }
+            .receipt-card { border: none; }
+        }
+    </style>
+</head>
+<body style="display: block;">
+    <button class="btn no-print" onclick="window.print()" style="margin-bottom: 20px;">Print Receipt</button>
+    <button class="btn no-print" onclick="window.history.back()" style="margin-bottom: 20px; background: #95a5a6;">Back</button>
+
+    <div class="receipt-card">
+        <div class="receipt-header">
+            <h1>Trust Ledger</h1>
+            <p>Gold Loan Management System</p>
+            <p>Receipt / Statement</p>
+        </div>
+        
+        <div id="receiptContent">
+            Loading...
+        </div>
+        
+        <div style="margin-top: 50px; text-align: center; color: #7f8c8d; font-size: 12px;">
+            <p>Thank you for your business.</p>
+            <p>This is a computer generated receipt.</p>
+        </div>
+    </div>
+
+    <script src="./js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const loanId = urlParams.get('id');
+
+        async function loadReceipt() {
+            const loan = await fetchApi(`/api/loans/${loanId}`);
+            if (loan) {
+                const c = document.getElementById('receiptContent');
+                c.innerHTML = `
+                    <div class="receipt-row"><strong>Loan ID:</strong> <span>#${loan.id}</span></div>
+                    <div class="receipt-row"><strong>Date:</strong> <span>${new Date().toLocaleDateString()}</span></div>
+                    <br>
+                    <div class="receipt-row"><strong>Customer Name:</strong> <span>${loan.customer.name}</span></div>
+                    <div class="receipt-row"><strong>Phone:</strong> <span>${loan.customer.phoneNumber}</span></div>
+                    <br>
+                    <div class="receipt-row"><strong>Item Description:</strong> <span>${loan.itemType} (${loan.weight}g, ${loan.purity})</span></div>
+                    <div class="receipt-row"><strong>Loan Amount:</strong> <span>${formatCurrency(loan.loanAmount)}</span></div>
+                    <div class="receipt-row"><strong>Remaining Principal:</strong> <span>${formatCurrency(loan.remainingPrincipal)}</span></div>
+                    <div class="receipt-row"><strong>Pending Interest:</strong> <span>${formatCurrency(loan.totalPendingInterest)}</span></div>
+                    <div class="receipt-row"><strong>Status:</strong> <span>${loan.status}</span></div>
+                `;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadReceipt);
+    </script>
+</body>
+</html>
