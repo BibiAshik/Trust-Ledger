@@ -32,11 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-### Deployment files not included for interview push ###
-Dockerfile
-compose.yaml
-.dockerignore
-
 ### Scratch/local metadata ###
 metadata.xml
 temp.pom
