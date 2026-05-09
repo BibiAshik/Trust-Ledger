@@ -39,3 +39,13 @@ temp.pom
 ### OS ###
 .DS_Store
 Thumbs.db
+
+### Docker ###
+Dockerfile
+.dockerignore
+compose.yaml
+docker-compose.yml
+
+### Compiled and Logs ###
+*.class
+logs/
