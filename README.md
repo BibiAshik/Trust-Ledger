@@ -34,10 +34,8 @@ Trust Ledger is a comprehensive, realistic full-stack web application built to m
 - **CSS3** (Vanilla CSS, Flexbox, Custom CSS Variables)
 - **JavaScript** (Vanilla JS, Fetch API, DOM manipulation)
 
-*Note: The frontend avoids heavy frameworks like React/Angular and complex CSS libraries like Tailwind to maintain a clean, beginner-friendly architecture.*
 
-## Screenshots
-*(Add screenshots of the Dashboard, Loan Details, and Customers list here)*
+
 
 ## Database Setup
 
@@ -64,36 +62,9 @@ If these variables are not set, the application uses an embedded H2 database for
 5. The application will start on port `8080` by default.
 6. Open your web browser and navigate to: `http://localhost:8080`
 
-## Deployment
 
-Build the production JAR:
 
-```bash
-mvn clean package
-```
 
-Run it with environment-based configuration:
-
-```bash
-java -jar target/trustledger-0.0.1-SNAPSHOT.jar
-```
-
-Or build and run with Docker:
-
-```bash
-docker build -t trust-ledger .
-docker run -p 8080:8080 \
-  -e DATABASE_URL="jdbc:mysql://host.docker.internal:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC" \
-  -e DATABASE_USERNAME="root" \
-  -e DATABASE_PASSWORD="root" \
-  trust-ledger
-```
-
-For a complete local deployment with MySQL and the application together:
-
-```bash
-docker compose up --build
-```
 
 ## Login Details
 
@@ -102,9 +73,4 @@ On first startup, the application automatically provisions a default administrat
 - **Username**: `admin`
 - **Password**: `admin`
 
-## Future Improvements
 
-- Add robust PDF generation for receipts instead of HTML printing.
-- Implement daily-compounding interest logic for more precise financial tracking.
-- Add granular role-based access control (RBAC) for Staff vs. Manager roles.
-- Add an automated scheduled task (Cron Job) to run overdue checks nightly.
