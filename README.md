@@ -34,7 +34,7 @@ Trust Ledger is a comprehensive, realistic full-stack web application built to m
 - **CSS3** (Vanilla CSS, Flexbox, Custom CSS Variables)
 - **JavaScript** (Vanilla JS, Fetch API, DOM manipulation)
 
-##By default the app runs with an in-memory H2 database — no setup needed. To use MySQL, set the environment variables below.
+By default the app runs with an in-memory H2 database — no setup needed. To use MySQL, set the environment variables below.
 
 ## Database Setup
 
