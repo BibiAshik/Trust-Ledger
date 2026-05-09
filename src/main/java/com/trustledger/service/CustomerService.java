@@ -26,11 +26,14 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
     
-    public List<Customer> searchCustomers(String query) {
-        List<Customer> byName = customerRepository.findByNameContainingIgnoreCase(query);
-        if (byName.isEmpty()) {
-            return customerRepository.findByPhoneNumberContaining(query);
-        }
-        return byName;
-    }
+   public List<Customer> searchCustomers(String query) {
+    List<Customer> byName = customerRepository.findByNameContainingIgnoreCase(query);
+    List<Customer> byPhone = customerRepository.findByPhoneNumberContaining(query);
+    byName.addAll(byPhone);
+    return byName.stream().distinct().toList();
+}
+
+
+
+    
 }
