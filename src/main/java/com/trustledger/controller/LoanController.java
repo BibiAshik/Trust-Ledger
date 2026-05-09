@@ -23,7 +23,6 @@ public class LoanController {
     @GetMapping
     public List<Loan> getAllLoans() {
         loanService.checkOverdueAndAuctionStatus();
-        loanService.calculateMonthlyInterest();
         return loanService.getAllLoans();
     }
     
