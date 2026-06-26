@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,43 +55,8 @@ public class LoanService {
         loan.setRemainingPrincipal(loan.getLoanAmount());
         loan.setTotalPendingInterest(0.0);
         loan.setStatus(LoanStatus.ACTIVE);
+        loan.setLastInterestCalculatedDate(loan.getLoanDate());
         return loanRepository.save(loan);
-    }
-
-    @Transactional
-    public void calculateMonthlyInterest() {
-        List<Loan> activeLoans = loanRepository.findByStatus(LoanStatus.ACTIVE);
-        for (Loan loan : activeLoans) {
-            double principal = loan.getRemainingPrincipal() != null ? loan.getRemainingPrincipal() : 0.0;
-            double interestRate = loan.getInterestPercentage() != null ? loan.getInterestPercentage() : 0.0;
-            double pendingInterest = loan.getTotalPendingInterest() != null ? loan.getTotalPendingInterest() : 0.0;
-            double monthlyInterest = (principal * interestRate) / 100.0;
-            loan.setTotalPendingInterest(pendingInterest + monthlyInterest);
-            loanRepository.save(loan);
-        }
-    }
-
-    public void checkOverdueAndAuctionStatus() {
-        List<Loan> activeLoans = loanRepository.findByStatus(LoanStatus.ACTIVE);
-        List<Loan> overdueLoans = loanRepository.findByStatus(LoanStatus.OVERDUE);
-
-        LocalDate today = LocalDate.now();
-
-        // Check Active -> Overdue
-        for (Loan loan : activeLoans) {
-            if (loan.getDueDate() != null && loan.getDueDate().isBefore(today)) {
-                loan.setStatus(LoanStatus.OVERDUE);
-                loanRepository.save(loan);
-            }
-        }
-
-        // Check Overdue -> Auction Eligible
-        for (Loan loan : overdueLoans) {
-            if (loan.getDueDate() != null && loan.getDueDate().plusMonths(3).isBefore(today)) {
-                loan.setStatus(LoanStatus.AUCTION_ELIGIBLE);
-                loanRepository.save(loan);
-            }
-        }
     }
 
     public Loan renewLoan(Long id, String reason, LocalDate newDueDate) {
@@ -126,4 +92,70 @@ public class LoanService {
     public List<LoanNote> getLoanNotes(Long loanId) {
         return loanNoteRepository.findByLoanIdOrderByCreatedAtDesc(loanId);
     }
+
+    /**
+     * Calculate monthly simple interest based on elapsed time.
+     * Interest is calculated as: (remainingPrincipal * interestRate / 100) per month.
+     * Only accrues for COMPLETE months that haven't been calculated yet.
+     * This is how normal gold loan shops work — simple interest on remaining principal.
+     */
+    @Transactional
+    public void calculateMonthlyInterest() {
+        List<Loan> activeLoans = loanRepository.findByStatus(LoanStatus.ACTIVE);
+        LocalDate today = LocalDate.now();
+
+        for (Loan loan : activeLoans) {
+            // Determine the date from which to calculate interest
+            LocalDate lastCalcDate = loan.getLastInterestCalculatedDate();
+            if (lastCalcDate == null) {
+                lastCalcDate = loan.getLoanDate();
+            }
+            if (lastCalcDate == null) {
+                continue; // Skip if no date reference exists
+            }
+
+            // Calculate the number of complete months elapsed since last calculation
+            long monthsElapsed = ChronoUnit.MONTHS.between(lastCalcDate, today);
+
+            if (monthsElapsed <= 0) {
+                continue; // No full month has passed, nothing to accrue
+            }
+
+            double principal = loan.getRemainingPrincipal() != null ? loan.getRemainingPrincipal() : 0.0;
+            double interestRate = loan.getInterestPercentage() != null ? loan.getInterestPercentage() : 0.0;
+            double pendingInterest = loan.getTotalPendingInterest() != null ? loan.getTotalPendingInterest() : 0.0;
+
+            // Simple interest for the elapsed months: principal * rate/100 * months
+            double newInterest = (principal * interestRate / 100.0) * monthsElapsed;
+            loan.setTotalPendingInterest(pendingInterest + newInterest);
+
+            // Move the last calculated date forward by the number of complete months
+            loan.setLastInterestCalculatedDate(lastCalcDate.plusMonths(monthsElapsed));
+            loanRepository.save(loan);
+        }
+    }
+
+    public void checkOverdueAndAuctionStatus() {
+        List<Loan> activeLoans = loanRepository.findByStatus(LoanStatus.ACTIVE);
+        List<Loan> overdueLoans = loanRepository.findByStatus(LoanStatus.OVERDUE);
+
+        LocalDate today = LocalDate.now();
+
+        // Check Active -> Overdue
+        for (Loan loan : activeLoans) {
+            if (loan.getDueDate() != null && loan.getDueDate().isBefore(today)) {
+                loan.setStatus(LoanStatus.OVERDUE);
+                loanRepository.save(loan);
+            }
+        }
+
+        // Check Overdue -> Auction Eligible
+        for (Loan loan : overdueLoans) {
+            if (loan.getDueDate() != null && loan.getDueDate().plusMonths(3).isBefore(today)) {
+                loan.setStatus(LoanStatus.AUCTION_ELIGIBLE);
+                loanRepository.save(loan);
+            }
+        }
+    }
+
 }
