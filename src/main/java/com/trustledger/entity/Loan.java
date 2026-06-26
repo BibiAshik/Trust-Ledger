@@ -22,7 +22,9 @@ public class Loan {
     private Customer customer;
 
     private String itemType; // chain, ring, bracelet, coins
-    private Double weight; // in grams
+    private Integer numberOfItems; // Number of gold items
+    private Double weight; // in grams (gross weight)
+    private Double grossWeight; // Gross weight in grams
     private String purity; // e.g., 22K, 24K
     private Double estimatedValue;
 
@@ -34,11 +36,23 @@ public class Loan {
     private LocalDate loanDate;
     private LocalDate dueDate;
     private LocalDate renewedDate;
+    private String loanPeriod; // e.g., "3 months", "6 months", "12 months"
 
     private Integer renewalCount = 0;
 
     @Enumerated(EnumType.STRING)
     private LoanStatus status; // ACTIVE, OVERDUE, CLOSED, AUCTION_ELIGIBLE
+
+    @Column(columnDefinition = "TEXT")
+    private String remarks; // Item description / remarks
+
+    @Column(columnDefinition = "TEXT")
+    private String goldPhotoUrls; // Comma-separated photo URLs
+
+    @Column(columnDefinition = "TEXT")
+    private String documentUrls; // Comma-separated document URLs
+
+    private LocalDate lastInterestCalculatedDate; // Tracks when interest was last accrued
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

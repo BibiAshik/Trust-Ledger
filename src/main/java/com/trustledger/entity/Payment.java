@@ -25,6 +25,15 @@ public class Payment {
 
     private Double amount;
 
+    @Enumerated(EnumType.STRING)
+    private PaymentMode paymentMode = PaymentMode.CASH;
+
+    private String razorpayOrderId;
+    private String razorpayPaymentId;
+    private String razorpaySignature;
+    
+    private String status = "SUCCESS"; // SUCCESS, PENDING, FAILED
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime paymentDate = LocalDateTime.now();
 }
