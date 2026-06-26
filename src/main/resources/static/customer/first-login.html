@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <title>Trust Ledger - Set New Password</title>
+    <link rel="stylesheet" href="../css/auth.css">
+    <style>
+        .stroke-icon { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+</head>
+
+<body class="login-page-wrapper" style="justify-content: center; align-items: center; background-color: #111827;">
+    <div class="login-card" style="margin: auto; max-width: 440px; width: 100%;">
+        <div class="login-card-header">
+            <div class="login-card-icon">
+                <svg class="stroke-icon" style="width:24px;height:24px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>Set Your Password</h2>
+            <p>This is your first login. Please set a new password to continue.</p>
+        </div>
+
+        <form id="passwordForm">
+            <div class="input-group">
+                <label>New Password</label>
+                <div class="input-wrapper">
+                    <div class="input-icon"><svg class="stroke-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                    <input type="password" id="newPassword" name="newPassword" placeholder="New Password" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <div class="input-wrapper">
+                    <div class="input-icon"><svg class="stroke-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-login" id="setBtn">Set Password</button>
+            <p id="errorMsg" style="color: var(--danger); display: none; margin-top: 12px; font-size: 14px; text-align: center;"></p>
+        </form>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errEl = document.getElementById('errorMsg');
+            errEl.style.display = 'none';
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword.length < 6) {
+                errEl.textContent = 'Password must be at least 6 characters.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            document.getElementById('setBtn').disabled = true;
+            document.getElementById('setBtn').textContent = 'Setting...';
+
+            try {
+                await fetchApi('/api/customer-portal/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPassword })
+                });
+
+                // Update stored user so isFirstLogin flag reflects change
+                const stored = sessionStorage.getItem('tl_user');
+                if (stored) {
+                    const user = JSON.parse(stored);
+                    user.isFirstLogin = false;
+                    sessionStorage.setItem('tl_user', JSON.stringify(user));
+                }
+
+                window.location.href = './dashboard.html';
+            } catch (error) {
+                errEl.textContent = 'Failed to update password. Please try again.';
+                errEl.style.display = 'block';
+                document.getElementById('setBtn').disabled = false;
+                document.getElementById('setBtn').textContent = 'Set Password';
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+

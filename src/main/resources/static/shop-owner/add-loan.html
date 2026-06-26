@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <title>Trust Ledger - Add Loan</title>
+    <link rel="stylesheet" href="../css/shop-owner.css">
+    <style>
+        .stroke-icon { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .cp-form-section + .cp-form-section { margin-top: 24px; }
+        .cp-form-section .cp-form-title { color: var(--cp-gold); font-weight: 700; font-size: 1.05rem; margin-bottom: 16px; }
+        .cp-form-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .cp-form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .cp-form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .cp-form-grid-4 .full-width, .cp-form-grid-3 .full-width, .cp-form-grid-2 .full-width { grid-column: 1 / -1; }
+        .cp-form-grid-4 .span-2 { grid-column: span 2; }
+        @media (max-width: 900px) {
+            .cp-form-grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .cp-form-grid-3 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .cp-form-grid-4 { grid-template-columns: 1fr; }
+            .cp-form-grid-2 { grid-template-columns: 1fr; }
+        }
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s;
+            position: relative;
+        }
+        .upload-area:hover { border-color: var(--cp-gold); background: rgba(197,160,89,0.04); }
+        .upload-area input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .upload-area .upload-icon {
+            width: 36px; height: 36px; margin: 0 auto 8px; color: #94a3b8;
+        }
+        .upload-area .upload-label { font-weight: 600; color: var(--cp-text); margin-bottom: 2px; }
+        .upload-area .upload-hint { font-size: 0.82rem; color: #94a3b8; }
+        .file-preview-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .file-preview-item {
+            background: #f1f5f9; border-radius: 6px; padding: 4px 10px; font-size: 0.82rem;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .file-preview-item .remove-file {
+            cursor: pointer; color: var(--danger); font-weight: bold; font-size: 1rem; line-height: 1;
+        }
+        textarea.cp-input { min-height: 70px; resize: vertical; }
+        .char-count { text-align: right; font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
+    </style>
+</head>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./customers.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Customers</a>
+        <a href="./loans.html" class="active"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1py)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2py)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3py)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <defs>
+                <linearGradient id="gb1py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong></div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg class="stroke-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Shop Owner</div></div>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <p class="cp-page-title">Add Loan</p>
+        <p class="cp-page-sub">Loans &gt; Add Loan</p>
+
+        <form id="loanForm" enctype="multipart/form-data">
+
+            <!-- Section 1: Customer Information -->
+            <div class="cp-form-section">
+                <div class="cp-form-title">1. Customer Information</div>
+                <div class="cp-form-grid">
+                    <div class="cp-form-group full-width">
+                        <label>Select Customer <span class="req">*</span></label>
+                        <select class="cp-input" id="lCustomer" required>
+                            <option value="">Loading customers...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Gold Item Details -->
+            <div class="cp-form-section">
+                <div class="cp-form-title">2. Gold Item Details</div>
+                <div class="cp-form-grid-4">
+                    <div class="cp-form-group">
+                        <label>Ornament Type <span class="req">*</span></label>
+                        <select class="cp-input" id="lItemType" required>
+                            <option value="">Select type</option>
+                            <option value="Chain">Chain</option>
+                            <option value="Ring">Ring</option>
+                            <option value="Bracelet">Bracelet</option>
+                            <option value="Bangle">Bangle</option>
+                            <option value="Necklace">Necklace</option>
+                            <option value="Coins">Coins</option>
+                            <option value="Earrings">Earrings</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Number of Items <span class="req">*</span></label>
+                        <input type="number" min="1" class="cp-input" id="lNumItems" placeholder="e.g. 1" required>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Gross Weight (grams) <span class="req">*</span></label>
+                        <input type="number" step="0.01" class="cp-input" id="lWeight" placeholder="e.g. 25.50" required>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Purity <span class="req">*</span></label>
+                        <select class="cp-input" id="lPurity" required>
+                            <option value="">Select purity</option>
+                            <option value="24K">24K</option>
+                            <option value="22K">22K</option>
+                            <option value="20K">20K</option>
+                            <option value="18K">18K</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Estimated Value (₹)</label>
+                        <input type="number" step="0.01" class="cp-input" id="lEstValue" placeholder="e.g. 250000">
+                    </div>
+                </div>
+
+                <!-- Gold Photos Upload -->
+                <div style="margin-top: 18px;">
+                    <label style="font-weight:600; font-size:0.95rem;">Upload Gold Photos (Optional)</label>
+                    <p style="font-size:0.82rem; color:#94a3b8; margin-bottom:8px;">Upload clear images of the gold items</p>
+                    <div class="upload-area" id="goldPhotoArea">
+                        <input type="file" id="goldPhotoInput" multiple accept="image/png,image/jpg,image/jpeg">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" style="width:36px;height:36px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <div class="upload-label">Choose Images</div>
+                        <div class="upload-hint">PNG, JPG, JPEG (Max 5 images)</div>
+                    </div>
+                    <div class="file-preview-list" id="goldPhotoPreview"></div>
+                </div>
+            </div>
+
+            <!-- Section 3: Loan Details -->
+            <div class="cp-form-section">
+                <div class="cp-form-title">3. Loan Details</div>
+                <div class="cp-form-grid-3">
+                    <div class="cp-form-group">
+                        <label>Loan Amount (₹) <span class="req">*</span></label>
+                        <input type="number" step="0.01" class="cp-input" id="lAmount" placeholder="e.g. 50000" required>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Interest Rate (% per month) <span class="req">*</span></label>
+                        <input type="number" step="0.1" class="cp-input" id="lInterest" value="2.0" required>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Loan Date <span class="req">*</span></label>
+                        <input type="date" class="cp-input" id="lDate" required>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Loan Period <span class="req">*</span></label>
+                        <select class="cp-input" id="lPeriod" required>
+                            <option value="">Select period</option>
+                            <option value="3 months">3 Months</option>
+                            <option value="6 months">6 Months</option>
+                            <option value="9 months">9 Months</option>
+                            <option value="12 months">12 Months</option>
+                        </select>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Due Date <span class="req">*</span></label>
+                        <input type="date" class="cp-input" id="lDueDate" required>
+                    </div>
+                    <div class="cp-form-group">
+                        <label>Loan Status <span class="req">*</span></label>
+                        <select class="cp-input" id="lStatus" required>
+                            <option value="ACTIVE">Active</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Documents (Optional) -->
+            <div class="cp-form-section" style="display:flex; gap:24px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:280px;">
+                    <div class="cp-form-title">4. Documents (Optional)</div>
+                    <label style="font-weight:600; font-size:0.95rem;">Upload Documents</label>
+                    <p style="font-size:0.82rem; color:#94a3b8; margin-bottom:8px;">Aadhaar / PAN / Gold Bill (if any)</p>
+                    <div class="upload-area" id="docArea">
+                        <input type="file" id="docInput" multiple accept="image/png,image/jpg,image/jpeg,application/pdf">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" style="width:36px;height:36px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <div class="upload-label">Choose Files</div>
+                        <div class="upload-hint">PNG, JPG, PDF (Max 5 files)</div>
+                    </div>
+                    <div class="file-preview-list" id="docPreview"></div>
+                </div>
+                <div style="flex:1; min-width:280px;">
+                    <div class="cp-form-title">5. Remarks</div>
+                    <label>Remarks</label>
+                    <textarea class="cp-input" id="lRemarks" placeholder="Enter any remarks (optional)" maxlength="500"></textarea>
+                    <div class="char-count"><span id="remarkCount">0</span> / 500</div>
+                </div>
+            </div>
+
+            <p id="errorMsg" style="color:var(--danger); display:none; text-align:right; margin-bottom:10px;"></p>
+            
+            <div class="cp-form-actions">
+                <a href="./loans.html" class="cp-btn cp-btn-cancel">Cancel</a>
+                <button type="submit" class="cp-btn cp-btn-primary" id="saveBtn">
+                    <svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save Loan
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+// Track selected files
+let goldPhotoFiles = [];
+let docFiles = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    initTopbar();
+
+    // Set default loan date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('lDate').value = today;
+
+    // Load customers
+    const customerSelect = document.getElementById('lCustomer');
+    try {
+        const customers = await fetchApi('/api/customers');
+        customerSelect.innerHTML = '<option value="">Select a customer</option>';
+        if(customers) {
+            customers.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name} - ${c.phoneNumber}`;
+                customerSelect.appendChild(opt);
+            });
+        }
+    } catch (e) {
+        customerSelect.innerHTML = '<option value="">Failed to load customers</option>';
+    }
+
+    // Loan Period -> Due Date auto-calculation
+    document.getElementById('lPeriod').addEventListener('change', () => {
+        const loanDate = document.getElementById('lDate').value;
+        const period = document.getElementById('lPeriod').value;
+        if (loanDate && period) {
+            const date = new Date(loanDate);
+            const months = parseInt(period); // "3 months" -> 3
+            date.setMonth(date.getMonth() + months);
+            document.getElementById('lDueDate').value = date.toISOString().split('T')[0];
+        }
+    });
+
+    document.getElementById('lDate').addEventListener('change', () => {
+        const period = document.getElementById('lPeriod').value;
+        if (period) {
+            document.getElementById('lPeriod').dispatchEvent(new Event('change'));
+        }
+    });
+
+    // Remarks char count
+    document.getElementById('lRemarks').addEventListener('input', (e) => {
+        document.getElementById('remarkCount').textContent = e.target.value.length;
+    });
+
+    // Gold Photo file handling
+    setupFileUpload('goldPhotoInput', 'goldPhotoPreview', goldPhotoFiles, 5, ['image/png', 'image/jpeg', 'image/jpg']);
+
+    // Document file handling
+    setupFileUpload('docInput', 'docPreview', docFiles, 5, ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf']);
+
+    // Form submission
+    document.getElementById('loanForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('saveBtn');
+        const err = document.getElementById('errorMsg');
+        btn.disabled = true;
+        btn.innerHTML = 'Saving...';
+        err.style.display = 'none';
+
+        try {
+            const formData = new FormData();
+            formData.append('customerId', document.getElementById('lCustomer').value);
+            formData.append('itemType', document.getElementById('lItemType').value);
+            formData.append('numberOfItems', document.getElementById('lNumItems').value);
+            formData.append('grossWeight', document.getElementById('lWeight').value);
+            formData.append('weight', document.getElementById('lWeight').value);
+            formData.append('purity', document.getElementById('lPurity').value);
+            
+            const estVal = document.getElementById('lEstValue').value;
+            if (estVal) formData.append('estimatedValue', estVal);
+
+            formData.append('loanAmount', document.getElementById('lAmount').value);
+            formData.append('interestPercentage', document.getElementById('lInterest').value);
+            formData.append('loanDate', document.getElementById('lDate').value);
+            formData.append('loanPeriod', document.getElementById('lPeriod').value);
+            formData.append('dueDate', document.getElementById('lDueDate').value);
+            
+            const remarks = document.getElementById('lRemarks').value;
+            if (remarks) formData.append('remarks', remarks);
+
+            // Append gold photos
+            goldPhotoFiles.forEach(file => {
+                formData.append('goldPhotos', file);
+            });
+
+            // Append documents
+            docFiles.forEach(file => {
+                formData.append('documents', file);
+            });
+
+            // Send as multipart
+            const token = getToken();
+            const response = await fetch('/api/loans/create', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error || `Request failed (${response.status})`);
+            }
+
+            window.location.href = './loans.html';
+        } catch (error) {
+            err.textContent = error.message;
+            err.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = `<svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Loan`;
+        }
+    });
+});
+
+function setupFileUpload(inputId, previewId, fileArray, maxFiles, allowedTypes) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+
+    input.addEventListener('change', () => {
+        const newFiles = Array.from(input.files);
+        for (const file of newFiles) {
+            if (fileArray.length >= maxFiles) {
+                alert(`Maximum ${maxFiles} files allowed.`);
+                break;
+            }
+            if (!allowedTypes.includes(file.type)) {
+                alert(`File type not allowed: ${file.name}`);
+                continue;
+            }
+            fileArray.push(file);
+        }
+        input.value = ''; // Clear input so same file can be added again if removed
+        renderFilePreview(preview, fileArray);
+    });
+}
+
+function renderFilePreview(container, fileArray) {
+    container.innerHTML = '';
+    fileArray.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'file-preview-item';
+        item.innerHTML = `
+            <span>${file.name}</span>
+            <span class="remove-file" data-index="${index}">&times;</span>
+        `;
+        item.querySelector('.remove-file').addEventListener('click', () => {
+            fileArray.splice(index, 1);
+            renderFilePreview(container, fileArray);
+        });
+        container.appendChild(item);
+    });
+}
+</script>
+</body>
+</html>

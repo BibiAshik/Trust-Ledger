@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <title>Trust Ledger - Loans</title>
+    <link rel="stylesheet" href="../css/shop-owner.css">
+    <style>
+        .stroke-icon { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+</head>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./customers.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Customers</a>
+        <a href="./loans.html" class="active"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1py)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2py)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3py)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <defs>
+                <linearGradient id="gb1py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong></div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg class="stroke-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Shop Owner</div></div>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px;">
+            <div>
+                <p class="cp-page-title">Loans</p>
+                <p class="cp-page-sub" style="margin-bottom:0;">Manage all active and pending loans</p>
+            </div>
+            <a href="./add-loan.html" class="cp-btn cp-btn-primary">
+                <svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Loan
+            </a>
+        </div>
+
+        <div class="cp-section">
+            <div class="cp-toolbar">
+                <div class="cp-toolbar-left">
+                    <div class="cp-search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="searchInput" placeholder="Search by Loan ID or Customer Name">
+                    </div>
+                    <div class="cp-filter-box">
+                        <select id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="OVERDUE">Overdue</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <table class="cp-table">
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Customer</th>
+                        <th>Item</th>
+                        <th style="text-align:right;">Principal</th>
+                        <th style="text-align:right;">Interest Due</th>
+                        <th style="text-align:center;">Status</th>
+                        <th style="text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="loansTable">
+                    <tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">Loading loans...</td></tr>
+                </tbody>
+            </table>
+
+            <div class="cp-pagination">
+                <div class="cp-pagination-info">Showing <span id="totalCount">0</span> loans</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+let allLoans = [];
+
+async function fetchAllLoans() {
+    try {
+        allLoans = await fetchApi('/api/loans');
+        filterLoans();
+    } catch (e) {
+        console.error(e);
+        document.getElementById('loansTable').innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:30px;">Failed to load loans</td></tr>`;
+    }
+}
+
+function filterLoans() {
+    const tbody = document.getElementById('loansTable');
+    const filter = document.getElementById('statusFilter').value;
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    
+    let filtered = allLoans;
+    
+    if (filter) {
+        filtered = filtered.filter(l => l.status === filter);
+    }
+    
+    if (query) {
+        filtered = filtered.filter(l => {
+            const idStr = 'tlg' + String(l.id).padStart(9, '0');
+            const cName = l.customer && l.customer.name ? l.customer.name.toLowerCase() : '';
+            return idStr.includes(query) || cName.includes(query);
+        });
+    }
+
+    document.getElementById('totalCount').textContent = filtered.length;
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">No loans found</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(l => {
+        const id = 'TLG' + String(l.id).padStart(9, '0');
+        const badgeClass = l.status === 'ACTIVE' ? 'badge-active' : (l.status === 'CLOSED' ? 'badge-closed' : 'badge-overdue');
+        
+        return `<tr>
+            <td style="font-weight:500;">${id}</td>
+            <td>${l.customer ? l.customer.name : 'Unknown'}</td>
+            <td>${l.itemType || 'Gold'} (${l.weight}g)</td>
+            <td style="text-align:right; font-weight:600;">${formatCurrency(l.remainingPrincipal || 0)}</td>
+            <td style="text-align:right; color:var(--danger); font-weight:500;">${formatCurrency(l.totalPendingInterest || 0)}</td>
+            <td style="text-align:center;"><span class="cp-badge ${badgeClass}">${l.status || 'ACTIVE'}</span></td>
+            <td style="text-align:center;">
+                <a href="./loan-details.html?id=${l.id}" class="cp-view-btn" title="View Details">
+                    <svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </a>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initTopbar();
+    fetchAllLoans();
+    
+    document.getElementById('searchInput').addEventListener('input', filterLoans);
+    document.getElementById('statusFilter').addEventListener('change', filterLoans);
+});
+</script>
+</body>
+</html>
+
+
+
+
+

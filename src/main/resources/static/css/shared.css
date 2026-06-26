@@ -1,0 +1,374 @@
+/* Shared foundation styles */
+:root {
+    /* Brand colors shared by shop owner and customer portals */
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent-gold: #c5a059;
+    --accent-hover: #b38b45;
+    --border-color: #e8ecf0;
+
+    /* Sidebar */
+    --sidebar-bg: #111827;
+    --sidebar-text: rgba(255, 255, 255, 0.72);
+    --sidebar-width: 240px;
+
+    /* Utilities */
+    --danger: #ef4444;
+    --success: #10b981;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    min-height: 100vh;
+    overflow: hidden;
+}
+/* Shared components */
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar { display: none; }
+
+.sidebar-header {
+    padding: 24px 18px 20px;
+    font-size: 17px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: white;
+    letter-spacing: -0.2px;
+}
+
+.sidebar-header::before {
+    content: "";
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    margin-right: 10px;
+    vertical-align: middle;
+    border-radius: 10px;
+    background: rgba(197, 160, 89, 0.18);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    box-shadow: inset 0 0 0 10px rgba(197, 160, 89, 0.04);
+}
+
+.nav-links {
+    list-style: none;
+    margin-top: 0;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nav-links li a {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 13.5px;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-links li a:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.nav-links li a.active {
+    background: rgba(197, 160, 89, 0.15);
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.nav-links li a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    background: var(--accent-gold);
+    border-radius: 0 3px 3px 0;
+}
+
+/* Main Content Layout */
+.main-content {
+    flex: 1;
+    padding: 24px 28px;
+    overflow-y: auto;
+    height: 100vh;
+    min-width: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -24px -28px 24px;
+    padding: 0 28px;
+    min-height: 62px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(190px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid #eff2f5;
+    min-width: 200px;
+    box-shadow: var(--shadow);
+}
+
+.card h3 {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.card .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.1;
+}
+
+/* Tables */
+.table-container {
+    background: var(--card-bg);
+    padding: 0;
+    border-radius: var(--radius);
+    border: 1px solid #eff2f5;
+    box-shadow: var(--shadow);
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 14px 24px;
+    text-align: left;
+    border-bottom: 1px solid #f5f7fa;
+    white-space: nowrap;
+}
+
+table th {
+    background-color: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+table td {
+    font-size: 13.5px;
+}
+
+table tr:hover td {
+    background: #fafbfc;
+}
+
+/* Forms & Buttons */
+.form-container {
+    background: var(--card-bg);
+    padding: 28px;
+    border-radius: var(--radius);
+    border: 1px solid #eff2f5;
+    max-width: 720px;
+    margin: 0 auto;
+    box-shadow: var(--shadow);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.btn {
+    background-color: var(--accent-gold);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background 0.3s;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.status-ACTIVE { background: #dcfce7; color: #166534; }
+.status-OVERDUE { background: #fee2e2; color: #991b1b; }
+.status-CLOSED { background: #e0f2fe; color: #075985; }
+.status-AUCTION_ELIGIBLE { background: #ffedd5; color: #9a3412; }
+
+/* Mobile navigation shared with customer portal */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 1200;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--text-main);
+    box-shadow: var(--shadow);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mobile-menu-toggle span,
+.mobile-menu-toggle::before,
+.mobile-menu-toggle::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    display: block;
+    position: absolute;
+}
+
+.mobile-menu-toggle span { transform: translateY(0); }
+.mobile-menu-toggle::before { transform: translateY(-6px); }
+.mobile-menu-toggle::after { transform: translateY(6px); }
+
+.mobile-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(2px);
+}
+
+@media (max-width: 1200px) {
+    .dashboard-cards { grid-template-columns: repeat(2, minmax(190px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    body { overflow: hidden; }
+
+    .mobile-menu-toggle { display: flex; }
+
+    .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 1100;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 8px 0 24px rgba(15, 23, 42, 0.28);
+    }
+
+    body.mobile-sidebar-open .sidebar { transform: translateX(0); }
+    body.mobile-sidebar-open .mobile-sidebar-backdrop { display: block; }
+
+    .main-content {
+        width: 100%;
+        padding: 18px 16px;
+    }
+
+    .header {
+        min-height: 64px;
+        margin: -18px -16px 18px;
+        padding: 0 16px 0 66px;
+        gap: 12px;
+    }
+
+    .header h2 { font-size: 18px; }
+    .dashboard-cards { grid-template-columns: 1fr; }
+    .card { min-width: 0; }
+    .form-container { padding: 20px; }
+    table th, table td { padding: 12px 14px; }
+}
+

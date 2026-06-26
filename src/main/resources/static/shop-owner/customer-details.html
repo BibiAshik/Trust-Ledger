@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Ledger - Customer Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shop-owner.css">
+    <style>
+        .stroke-icon { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        /* ── Specific Styles for Customer Details ── */
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0;
+        }
+        .page-header h2 { font-size: 1.5rem; font-weight: 800; color: #1e293b; letter-spacing: -0.5px; }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+            background: #f8fafc; color: #64748b; font-size: 0.875rem; font-weight: 600;
+            border-radius: 8px; text-decoration: none; transition: background 0.2s;
+        }
+        .btn-back:hover { background: #f1f5f9; color: #1e293b; }
+
+        .banner {
+            background: #fff; border-radius: 14px; padding: 22px 28px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 24px;
+        }
+        .banner-block { border-right: 1px solid #f1f5f9; padding-right: 20px; }
+        .banner-block:last-child { border-right: none; padding-right: 0; }
+        .banner-label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 6px; }
+        .banner-value { font-size: 1.1rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;}
+        .banner-value.large { font-size: 1.25rem; color: #c5a059; }
+
+        .body-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 22px; }
+        
+        .card { background: #fff; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+        .card-header {
+            padding: 18px 22px; border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: center; gap: 12px; background: #fafbfc;
+        }
+        .card-header-icon {
+            width: 32px; height: 32px; border-radius: 8px; background: #fef3c7; color: #d97706;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .card-header h3 { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0; }
+        
+        .card-body { padding: 22px; }
+
+        .profile-layout { display: flex; gap: 20px; align-items: flex-start; }
+        .profile-photo { 
+            width: 100px; height: 120px; border-radius: 8px; object-fit: cover;
+            border: 2px solid #e2e8f0; background: #f8fafc; cursor: pointer; transition: opacity 0.2s;
+        }
+        .profile-photo:hover { opacity: 0.85; }
+        
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+        .detail-cell { margin-bottom: 4px; }
+        .detail-label { font-size: 0.75rem; color: #94a3b8; font-weight: 500; margin-bottom: 4px; }
+        .detail-value { font-size: 0.95rem; font-weight: 600; color: #1e293b; }
+
+        .remarks-box {
+            background: #f8fafc; border-left: 4px solid #c5a059; padding: 14px 18px;
+            border-radius: 0 8px 8px 0; font-size: 0.9rem; color: #475569; line-height: 1.5;
+        }
+
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th {
+            background: #f8fafc; text-align: left; padding: 12px 18px;
+            font-size: 0.75rem; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .history-table td { padding: 14px 18px; font-size: 0.875rem; color: #1e293b; border-top: 1px solid #f8fafc; }
+        .history-table tr:hover td { background: #fafbfc; }
+
+        /* ── Image Modal ── */
+        .image-modal {
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            overflow: hidden; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .image-modal.active { display: flex; align-items: center; justify-content: center; opacity: 1; }
+        .image-modal-content { max-width: 90%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease; }
+        .image-modal.active .image-modal-content { transform: scale(1); }
+        .image-modal-close {
+            position: absolute; top: 20px; right: 30px; color: #fff; font-size: 35px;
+            font-weight: bold; cursor: pointer; transition: color 0.2s;
+        }
+        .image-modal-close:hover { color: #c5a059; }
+
+        @media (max-width: 900px) {
+            .body-grid { grid-template-columns: 1fr; }
+            .banner { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .banner-block { border-right: none; border-bottom: 1px solid #e9ecef; padding: 0 0 12px; }
+            .banner-block:last-child { border-bottom: none; }
+            .profile-layout { flex-direction: column; align-items: center; text-align: center; }
+            .detail-grid { grid-template-columns: 1fr; text-align: center; }
+        }
+    </style>
+</head>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./customers.html" class="active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Customers</a>
+        <a href="./loans.html"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1py)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2py)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3py)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <defs>
+                <linearGradient id="gb1py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong></div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg class="stroke-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Shop Owner</div></div>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <div style="max-width: 1100px; margin: 0 auto; width: 100%;">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2>Customer Details</h2>
+                <a href="./customers.html" class="btn-back">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back to Customers
+                </a>
+            </div>
+
+            <!-- Top Banner -->
+            <div class="banner">
+                <div class="banner-block">
+                    <div class="banner-label">Customer ID</div>
+                    <div class="banner-value large" id="c-id">—</div>
+                </div>
+                <div class="banner-block">
+                    <div class="banner-label">Customer Name</div>
+                    <div class="banner-value large" id="c-name" style="color:#1e293b;">—</div>
+                </div>
+                <div class="banner-block">
+                    <div class="banner-label">Phone Number</div>
+                    <div class="banner-value">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span id="c-phone">—</span>
+                    </div>
+                </div>
+                <div class="banner-block">
+                    <div class="banner-label">Email Address</div>
+                    <div class="banner-value">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <span id="c-email" style="font-size:0.9rem;">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="body-grid">
+                <!-- Left Column -->
+                <div class="left-col">
+                    <!-- Personal Info Card -->
+                    <div class="card" style="margin-bottom: 22px;">
+                        <div class="card-header">
+                            <div class="card-header-icon" style="background:#e0e7ff;color:#4f46e5;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                            <h3>Personal Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="profile-layout">
+                                <img src="https://via.placeholder.com/100x120?text=No+Photo" id="c-photo" class="profile-photo" alt="Passport Photo" onclick="if(this.src.indexOf('placeholder')===-1) openModal(this.src)">
+                                <div class="detail-grid">
+                                    <div class="detail-cell">
+                                        <div class="detail-label">Date of Birth</div>
+                                        <div class="detail-value" id="c-dob">—</div>
+                                    </div>
+                                    <div class="detail-cell">
+                                        <div class="detail-label">Gender</div>
+                                        <div class="detail-value" id="c-gender">—</div>
+                                    </div>
+                                    <div class="detail-cell">
+                                        <div class="detail-label">Marital Status</div>
+                                        <div class="detail-value" id="c-marital">—</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Identity & Employment Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-header-icon" style="background:#fee2e2;color:#dc2626;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                            <h3>Identity & Employment</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="detail-grid">
+                                <div class="detail-cell">
+                                    <div class="detail-label">Occupation</div>
+                                    <div class="detail-value" id="c-occupation">—</div>
+                                </div>
+                                <div class="detail-cell">
+                                    <div class="detail-label">Monthly Income</div>
+                                    <div class="detail-value" id="c-income">—</div>
+                                </div>
+                                <div class="detail-cell">
+                                    <div class="detail-label">Identity Proof Type</div>
+                                    <div class="detail-value" id="c-idtype">—</div>
+                                </div>
+                                <div class="detail-cell">
+                                    <div class="detail-label">Identity Proof Number</div>
+                                    <div class="detail-value" id="c-idnumber">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-col">
+                    <!-- Address Card -->
+                    <div class="card" style="margin-bottom: 22px;">
+                        <div class="card-header">
+                            <div class="card-header-icon" style="background:#dcfce7;color:#16a34a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                            <h3>Address Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="detail-grid" style="grid-template-columns: 1fr;">
+                                <div class="detail-cell">
+                                    <div class="detail-label">Address Line 1</div>
+                                    <div class="detail-value" id="c-addr1">—</div>
+                                </div>
+                                <div class="detail-cell">
+                                    <div class="detail-label">Address Line 2</div>
+                                    <div class="detail-value" id="c-addr2">—</div>
+                                </div>
+                            </div>
+                            <div class="detail-grid" style="margin-top:16px;">
+                                <div class="detail-cell">
+                                    <div class="detail-label">City</div>
+                                    <div class="detail-value" id="c-city">—</div>
+                                </div>
+                                <div class="detail-cell">
+                                    <div class="detail-label">State</div>
+                                    <div class="detail-value" id="c-state">—</div>
+                                </div>
+                                <div class="detail-cell">
+                                    <div class="detail-label">PIN Code</div>
+                                    <div class="detail-value" id="c-pin">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remarks Card -->
+                    <div class="card" id="remarks-card" style="display:none;">
+                        <div class="card-header">
+                            <div class="card-header-icon" style="background:#f3e8ff;color:#9333ea;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                            <h3>Remarks</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="remarks-box" id="c-remarks"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Loans Table -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon" style="background:rgba(197,160,89,0.1);color:#c5a059;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                    <h3>Customer Loans</h3>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Loan ID</th>
+                            <th>Item Type</th>
+                            <th>Weight</th>
+                            <th>Principal</th>
+                            <th>Total Due</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loansTable">
+                        <tr><td colspan="7" style="text-align:center;padding:36px;color:#94a3b8;">Loading loans...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div> <!-- close max-width -->
+    </div> <!-- close cp-content -->
+
+    <!-- Image Modal Overlay -->
+    <div id="imageModal" class="image-modal">
+        <span class="image-modal-close" id="modalCloseBtn">&times;</span>
+        <img class="image-modal-content" id="modalImg" src="">
+    </div>
+
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    initTopbar();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('id');
+
+    if (!customerId) {
+        alert("Customer ID missing");
+        window.location.href = './customers.html';
+        return;
+    }
+
+    // Setup Image Modal Logic
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    
+    window.openModal = function(imgSrc) {
+        modalImg.src = imgSrc;
+        modal.classList.add('active');
+    };
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        setTimeout(() => modalImg.src = '', 300);
+    }
+    
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    async function loadData() {
+        try {
+            const customer = await fetchApi(`/api/customers/${customerId}`);
+            if (!customer) throw new Error("Customer not found");
+
+            document.title = `Trust Ledger - Customer ${customer.name}`;
+            
+            // Populate Banner
+            document.getElementById('c-id').textContent = `CUST${String(customer.id).padStart(4, '0')}`;
+            document.getElementById('c-name').textContent = customer.name;
+            document.getElementById('c-phone').textContent = customer.phoneNumber;
+            document.getElementById('c-email').textContent = customer.email || '—';
+
+            // Populate Personal Details
+            if (customer.photoUrl) {
+                document.getElementById('c-photo').src = customer.photoUrl;
+            }
+            if (customer.dateOfBirth) {
+                document.getElementById('c-dob').textContent = new Date(customer.dateOfBirth).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+            }
+            document.getElementById('c-gender').textContent = customer.gender || '—';
+            document.getElementById('c-marital').textContent = customer.maritalStatus || '—';
+
+            // Populate Address
+            document.getElementById('c-addr1').textContent = customer.addressLine1 || '—';
+            document.getElementById('c-addr2').textContent = customer.addressLine2 || '—';
+            document.getElementById('c-city').textContent = customer.city || '—';
+            document.getElementById('c-state').textContent = customer.state || '—';
+            document.getElementById('c-pin').textContent = customer.pinCode || '—';
+
+            // Populate Identity & Employment
+            document.getElementById('c-occupation').textContent = customer.occupation || '—';
+            document.getElementById('c-income').textContent = customer.monthlyIncome ? formatCurrency(customer.monthlyIncome) : '—';
+            document.getElementById('c-idtype').textContent = customer.identityProofType || '—';
+            document.getElementById('c-idnumber').textContent = customer.identityProofNumber || '—';
+
+            // Populate Remarks
+            if (customer.remarks && customer.remarks.trim() !== '') {
+                document.getElementById('remarks-card').style.display = 'block';
+                document.getElementById('c-remarks').textContent = customer.remarks;
+            }
+
+            // Fetch and Populate Loans
+            loadLoans();
+            
+        } catch (e) {
+            console.error(e);
+            alert("Error loading customer details");
+            window.location.href = './customers.html';
+        }
+    }
+
+    async function loadLoans() {
+        const tbody = document.getElementById('loansTable');
+        try {
+            // We fetch all loans and filter for this customer
+            const allLoans = await fetchApi('/api/loans');
+            const customerLoans = allLoans.filter(l => l.customer && l.customer.id == customerId);
+            
+            if (customerLoans.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;color:#94a3b8;">No loans found for this customer.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = customerLoans.map(loan => {
+                const loanIdStr = 'TLG' + String(loan.id).padStart(9, '0');
+                const totalDue = (loan.remainingPrincipal || 0) + (loan.totalPendingInterest || 0);
+                
+                let badgeClass = 'badge-active';
+                if (loan.status === 'CLOSED') badgeClass = 'badge-closed';
+                else if (loan.status === 'OVERDUE') badgeClass = 'badge-overdue';
+
+                return `<tr>
+                    <td style="font-weight:600;color:#c5a059;">${loanIdStr}</td>
+                    <td>${loan.itemType || '—'}</td>
+                    <td>${loan.weight ? loan.weight + 'g' : '—'}</td>
+                    <td style="font-weight:600; color:#1e293b;">${formatCurrency(loan.loanAmount)}</td>
+                    <td style="font-weight:700; color:#dc2626;">${formatCurrency(totalDue)}</td>
+                    <td><span class="cp-badge ${badgeClass}" style="font-size:0.7rem;padding:3px 8px;">${loan.status}</span></td>
+                    <td style="text-align:center;">
+                        <a href="./loan-details.html?id=${loan.id}" class="cp-view-btn" title="View Details" style="display:inline-flex; width:28px; height:28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; align-items:center; justify-content:center; color:#64748b; transition:all 0.2s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </a>
+                    </td>
+                </tr>`;
+            }).join('');
+        } catch (e) {
+            console.error("Failed to load loans:", e);
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;color:#dc2626;">Failed to load loans.</td></tr>`;
+        }
+    }
+
+    loadData();
+});
+</script>
+</body>
+</html>

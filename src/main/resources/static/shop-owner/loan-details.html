@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <title>Trust Ledger - Loan Details</title>
+    <link rel="stylesheet" href="../css/shop-owner.css">
+    <style>
+        .stroke-icon { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        
+        /* ── Top Info Banner ── */
+        .loan-banner {
+            background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 22px 28px; margin-bottom: 22px; display: grid; grid-template-columns: 1fr auto 1fr 1fr;
+            gap: 0; align-items: start;
+        }
+        .banner-block { padding: 0 24px; border-right: 1px solid #e9ecef; }
+        .banner-block:first-child { padding-left: 0; }
+        .banner-block:last-child { border-right: none; }
+        .banner-label { font-size: 0.78rem; color: #94a3b8; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .banner-value { font-size: 0.95rem; font-weight: 600; color: #1e293b; }
+        .banner-value.large { font-size: 1.05rem; }
+        .badge-active { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: #dcfce7; color: #16a34a; margin-top: 4px; }
+        .badge-overdue { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: #fee2e2; color: #dc2626; margin-top: 4px; }
+        .badge-closed { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: #f1f5f9; color: #64748b; margin-top: 4px; }
+        .due-highlight { color: #c5a059; font-size: 0.82rem; font-weight: 500; margin-top: 3px; }
+        .date-row { display: flex; align-items: center; gap: 6px; }
+
+        /* ── Two-column main body ── */
+        .body-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; margin-bottom: 22px; }
+
+        /* ── Cards ── */
+        .card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; }
+        .card-header { display: flex; align-items: center; gap: 10px; padding: 16px 22px; border-bottom: 1px solid #f1f5f9; }
+        .card-header-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(197,160,89,0.12); display: flex; align-items: center; justify-content: center; color: #c5a059; }
+        .card-header h3 { font-size: 1rem; font-weight: 700; color: #c5a059; margin: 0; }
+        .card-body { padding: 20px 22px; }
+
+        /* ── Grid Items ── */
+        .gold-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+        .gold-cell { padding: 14px 16px; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+        .gold-cell:nth-child(3n) { border-right: none; }
+        .gold-cell:nth-last-child(-n+3) { border-bottom: none; }
+        .gold-cell-label { font-size: 0.78rem; color: #94a3b8; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .gold-cell-value { font-size: 0.95rem; font-weight: 600; color: #1e293b; word-break: break-word;}
+
+        /* ── Photos & Attachments ── */
+        .photos-header { display: flex; align-items: center; gap: 8px; padding: 14px 22px 10px; border-top: 1px solid #f1f5f9; }
+        .photos-header span { font-size: 0.9rem; font-weight: 600; color: #1e293b; }
+        .photos-grid { padding: 0 22px 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .photo-thumb { width: 90px; height: 90px; border-radius: 10px; object-fit: cover; border: 1.5px solid #e2e8f0; cursor: pointer; transition: transform 0.2s; }
+        .photo-thumb:hover { transform: scale(1.04); }
+        .no-photos { padding: 14px 22px; color: #94a3b8; font-size: 0.875rem; border-top: 1px solid #f1f5f9; }
+
+        /* ── Outstanding Summary ── */
+        .summary-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-bottom: 20px; }
+        .metric-cell { padding: 16px 14px; text-align: center; border-right: 1px solid #f1f5f9; }
+        .metric-cell:last-child { border-right: none; }
+        .metric-label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; }
+        .metric-value { font-size: 1.3rem; font-weight: 700; color: #1e293b; }
+
+        /* ── Payment Form ── */
+        .pay-section { border-top: 1px solid #f1f5f9; padding: 18px 22px; }
+        .pay-section h4 { font-size: 0.95rem; font-weight: 700; color: #1e293b; margin: 0 0 14px; }
+        .form-field { margin-bottom: 12px; }
+        .form-field label { font-size: 0.78rem; color: #94a3b8; display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-select, .form-input {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0;
+            border-radius: 8px; font-size: 0.9rem; color: #1e293b;
+            background: #fff; outline: none; transition: border-color 0.2s;
+            appearance: none; -webkit-appearance: none;
+        }
+        .form-select:focus, .form-input:focus { border-color: #c5a059; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '▾'; position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%); color: #94a3b8; pointer-events: none;
+        }
+        .pay-now-btn {
+            width: 100%; padding: 13px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #c5a059, #e8c97a);
+            color: #fff; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.2s; margin-top: 8px;
+        }
+        .pay-now-btn:hover { opacity: 0.9; }
+
+        /* ── Payment History ── */
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th {
+            background: #f8fafc; text-align: left; padding: 11px 16px;
+            font-size: 0.78rem; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .history-table td { padding: 13px 16px; font-size: 0.875rem; color: #1e293b; border-top: 1px solid #f8fafc; }
+        .history-table tr:hover td { background: #fafbfc; }
+
+        /* ── Confirm Modal ── */
+        .confirm-modal {
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); backdrop-filter: blur(3px);
+            align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;
+        }
+        .confirm-modal.active { display: flex; opacity: 1; }
+        .confirm-box {
+            background: #fff; width: 380px; max-width: 90%; border-radius: 14px;
+            padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: center;
+            transform: scale(0.95); transition: transform 0.2s;
+        }
+        .confirm-modal.active .confirm-box { transform: scale(1); }
+        .confirm-icon {
+            width: 52px; height: 52px; border-radius: 50%; background: #fef3c7; color: #d97706;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+        }
+        .confirm-icon.success { background: #dcfce7; color: #16a34a; }
+        .confirm-icon.error { background: #fee2e2; color: #dc2626; }
+        .confirm-title { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+        .confirm-msg { font-size: 0.95rem; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
+        .confirm-actions { display: flex; gap: 12px; justify-content: center; }
+        .confirm-btn {
+            padding: 11px 20px; border-radius: 8px; font-weight: 600; font-size: 0.95rem;
+            cursor: pointer; transition: all 0.2s; border: none; flex: 1; display: flex; justify-content: center; align-items: center; gap: 6px;
+        }
+        .confirm-btn-yes { background: linear-gradient(135deg, #c5a059, #e8c97a); color: #fff; }
+        .confirm-btn-yes:hover { opacity: 0.9; }
+        .confirm-btn-no { background: #f1f5f9; color: #64748b; }
+        .confirm-btn-no:hover { background: #e2e8f0; color: #1e293b; }
+
+        /* ── Image Modal ── */
+        .image-modal {
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            overflow: hidden; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .image-modal.active { display: flex; align-items: center; justify-content: center; opacity: 1; }
+        .image-modal-content { max-width: 90%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease; }
+        .image-modal.active .image-modal-content { transform: scale(1); }
+        .image-modal-close {
+            position: absolute; top: 20px; right: 30px; color: #fff; font-size: 35px;
+            font-weight: bold; cursor: pointer; transition: color 0.2s;
+        }
+        .image-modal-close:hover { color: #c5a059; }
+
+        @media (max-width: 900px) {
+            .body-grid { grid-template-columns: 1fr; }
+            .loan-banner { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .banner-block { border-right: none; border-bottom: 1px solid #e9ecef; padding: 0 0 12px; }
+            .banner-block:last-child { border-bottom: none; }
+            .gold-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./customers.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Customers</a>
+        <a href="./loans.html" class="active"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1py)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2py)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3py)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <defs>
+                <linearGradient id="gb1py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3py" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong></div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg class="stroke-icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Shop Owner</div></div>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <div style="max-width: 1100px; margin: 0 auto; width: 100%;">
+            <!-- Page Header -->
+            <div class="page-header" style="border-bottom: none; padding-bottom: 0; margin-bottom: 24px;">
+                <h2>Loan Details</h2>
+            </div>
+            <br>
+
+            <!-- Top Loan Info Banner -->
+            <div class="loan-banner">
+                <div class="banner-block">
+                    <div class="banner-label">Loan ID</div>
+                    <div class="banner-value large" id="dt-id">—</div>
+                    <div id="dt-status-badge" class="badge-active" style="margin-top:6px;">ACTIVE</div>
+                </div>
+                <div class="banner-block">
+                    <div class="banner-label">Customer</div>
+                    <div class="banner-value large" id="dt-cname">—</div>
+                </div>
+                <div class="banner-block">
+                    <div class="banner-label">Loan Date</div>
+                    <div class="date-row">
+                        <svg class="date-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span class="banner-value" id="dt-date">—</span>
+                    </div>
+                </div>
+                <div class="banner-block">
+                    <div class="banner-label">Due Date</div>
+                    <div class="date-row">
+                        <svg class="date-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span class="banner-value" id="dt-duedate">—</span>
+                    </div>
+                    <div class="due-highlight" id="dt-due-highlight"></div>
+                </div>
+            </div>
+
+            <div class="body-grid">
+                <!-- Left Column -->
+                <div class="left-col">
+                    <!-- Gold Item Details Card -->
+                    <div class="card" style="margin-bottom: 22px;">
+                        <div class="card-header">
+                            <div class="card-header-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                            <h3>Gold Item Details</h3>
+                        </div>
+                        <div class="gold-grid">
+                            <div class="gold-cell">
+                                <div class="gold-cell-label">Ornament Type</div>
+                                <div class="gold-cell-value" id="dt-item">—</div>
+                            </div>
+                            <div class="gold-cell">
+                                <div class="gold-cell-label">Number of Items</div>
+                                <div class="gold-cell-value" id="dt-numitems">—</div>
+                            </div>
+                            <div class="gold-cell">
+                                <div class="gold-cell-label">Gross Weight</div>
+                                <div class="gold-cell-value" id="dt-weight">—</div>
+                            </div>
+                            <div class="gold-cell">
+                                <div class="gold-cell-label">Purity</div>
+                                <div class="gold-cell-value" id="dt-purity">—</div>
+                            </div>
+                            <div class="gold-cell">
+                                <div class="gold-cell-label">Estimated Value</div>
+                                <div class="gold-cell-value" id="dt-estvalue">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Gold Photos -->
+                        <div id="dt-gold-photos-section" style="display:none;">
+                            <div class="photos-header">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <span>Gold Photos</span>
+                            </div>
+                            <div class="photos-grid" id="dt-gold-photos"></div>
+                        </div>
+
+                        <!-- Documents -->
+                        <div id="dt-docs-section" style="display:none;">
+                            <div class="photos-header" style="border-top:1px dashed #f1f5f9;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <span>Documents</span>
+                            </div>
+                            <div class="photos-grid" id="dt-docs"></div>
+                        </div>
+
+                        <!-- Remarks -->
+                        <div id="dt-remarks-section" style="display:none;">
+                            <div class="photos-header" style="border-top:1px dashed #f1f5f9;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                <span>Remarks</span>
+                            </div>
+                            <div style="padding: 0 22px 18px; font-size: 0.9rem; color: #64748b; line-height: 1.5;" id="dt-remarks"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-col">
+                    <div class="card" style="margin-bottom: 22px;">
+                        <div class="card-header">
+                            <div class="card-header-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                            <h3>Loan Details & Summary</h3>
+                        </div>
+                        <div class="card-body" style="padding-bottom:10px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:18px;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px; text-transform:uppercase;">Principal Issued</div>
+                                    <div style="font-size:1.15rem; font-weight:700; color:#1e293b;" id="dt-principal">—</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px; text-transform:uppercase;">Interest Rate</div>
+                                    <div style="font-size:1rem; font-weight:600; color:#1e293b;" id="dt-rate-display">—</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom:18px;">
+                                <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px; text-transform:uppercase;">Loan Period</div>
+                                <div style="font-size:1rem; font-weight:600; color:#1e293b;" id="dt-period">—</div>
+                            </div>
+                        </div>
+
+                        <div class="summary-metrics" style="border-top:1px solid #f1f5f9; background:#fafbfc; margin:0;">
+                            <div class="metric-cell">
+                                <div class="metric-label">Remaining Principal</div>
+                                <div class="metric-value" id="dt-rem-principal">—</div>
+                            </div>
+                            <div class="metric-cell">
+                                <div class="metric-label">Pending Interest</div>
+                                <div class="metric-value muted" id="dt-pend-interest">—</div>
+                            </div>
+                            <div class="metric-cell">
+                                <div class="metric-label">Total Due</div>
+                                <div class="metric-value danger" id="dt-total-due">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Record Payment Form -->
+                        <div class="pay-section" id="addPaymentSection">
+                            <h4>Record Payment</h4>
+                            <form id="paymentForm">
+                                <div class="form-field">
+                                    <label>Payment Type</label>
+                                    <div class="select-wrapper">
+                                        <select class="form-select" id="pType" required>
+                                            <option value="INTEREST">Interest Only</option>
+                                            <option value="PRINCIPAL">Principal Recovery</option>
+                                            <option value="FULL_CLOSURE">Full Closure</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-field">
+                                    <label>Enter Amount (₹)</label>
+                                    <input type="number" step="0.01" class="form-input" id="pAmount" required>
+                                </div>
+                                <button type="submit" class="pay-now-btn">Submit Payment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment History -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon" style="background:rgba(22,163,74,0.1);color:#16a34a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+                    <h3 style="color:#1e293b;">Payment History</h3>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Receipt No.</th>
+                            <th>Amount (₹)</th>
+                            <th>Payment Type</th>
+                            <th>Payment Mode</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTable">
+                        <tr><td colspan="5" style="text-align:center;padding:36px;color:#94a3b8;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div> <!-- close max-width -->
+    </div> <!-- close cp-content -->
+
+    <!-- Image Modal Overlay -->
+    <div id="imageModal" class="image-modal">
+        <span class="image-modal-close" id="modalCloseBtn">&times;</span>
+        <img class="image-modal-content" id="modalImg" src="">
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="customConfirm" class="confirm-modal">
+        <div class="confirm-box">
+            <div id="ccIcon" class="confirm-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div id="ccTitle" class="confirm-title">Confirm Action</div>
+            <div id="ccMsg" class="confirm-msg">Are you sure?</div>
+            <div id="ccActions" class="confirm-actions">
+                <button id="ccNoBtn" class="confirm-btn confirm-btn-no">Cancel</button>
+                <button id="ccYesBtn" class="confirm-btn confirm-btn-yes">Yes, Confirm</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    initTopbar();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const loanId = urlParams.get('id');
+
+    if (!loanId) {
+        alert("Loan ID missing");
+        window.location.href = './loans.html';
+        return;
+    }
+
+    // Setup Image Modal Logic
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    
+    function openModal(imgSrc) {
+        modalImg.src = imgSrc;
+        modal.classList.add('active');
+    }
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        setTimeout(() => modalImg.src = '', 300);
+    }
+    
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    async function loadData() {
+        try {
+            const loan = await fetchApi(`/api/loans/${loanId}`);
+            if (!loan) throw new Error("Loan not found");
+
+            document.title = `Trust Ledger - Loan TLG${String(loan.id).padStart(9, '0')}`;
+            
+            // Banner Info
+            document.getElementById('dt-id').textContent = `TLG${String(loan.id).padStart(9, '0')}`;
+            document.getElementById('dt-cname').textContent = loan.customer ? loan.customer.name : 'Unknown Customer';
+            document.getElementById('dt-date').textContent = new Date(loan.loanDate || Date.now()).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+            
+            if (loan.dueDate) {
+                const dueDate = new Date(loan.dueDate);
+                document.getElementById('dt-duedate').textContent = dueDate.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+                const daysDiff = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+                const dueHighlight = document.getElementById('dt-due-highlight');
+                if (loan.status === 'CLOSED') {
+                    dueHighlight.textContent = '';
+                } else if (daysDiff < 0) {
+                    dueHighlight.textContent = `${Math.abs(daysDiff)} days overdue`;
+                    dueHighlight.style.color = '#dc2626';
+                } else if (daysDiff <= 7) {
+                    dueHighlight.textContent = `Due in ${daysDiff} days`;
+                } else {
+                    dueHighlight.textContent = '';
+                }
+            }
+
+            const badge = document.getElementById('dt-status-badge');
+            badge.textContent = loan.status;
+            badge.className = loan.status === 'ACTIVE' ? 'badge-active' : (loan.status === 'CLOSED' ? 'badge-closed' : 'badge-overdue');
+
+            if (loan.status === 'CLOSED') {
+                document.getElementById('addPaymentSection').style.display = 'none';
+            }
+
+            // Gold Details Card
+            document.getElementById('dt-item').textContent = loan.itemType || '—';
+            document.getElementById('dt-numitems').textContent = loan.numberOfItems || '1';
+            document.getElementById('dt-weight').textContent = loan.weight ? `${loan.weight}g` : '—';
+            document.getElementById('dt-purity').textContent = loan.purity || '—';
+            document.getElementById('dt-estvalue').textContent = loan.estimatedValue ? formatCurrency(loan.estimatedValue) : '—';
+
+            // Summary Card
+            document.getElementById('dt-principal').textContent = formatCurrency(loan.loanAmount);
+            document.getElementById('dt-rate-display').textContent = `${loan.interestPercentage || 0}% p.m.`;
+            document.getElementById('dt-period').textContent = loan.loanPeriod ? `${loan.loanPeriod} Months` : '—';
+            
+            document.getElementById('dt-rem-principal').textContent = formatCurrency(loan.remainingPrincipal);
+            document.getElementById('dt-pend-interest').textContent = formatCurrency(loan.totalPendingInterest);
+            const totalDue = (loan.remainingPrincipal || 0) + (loan.totalPendingInterest || 0);
+            document.getElementById('dt-total-due').textContent = formatCurrency(totalDue);
+
+            // Remarks
+            if (loan.remarks && loan.remarks.trim()) {
+                document.getElementById('dt-remarks-section').style.display = 'block';
+                document.getElementById('dt-remarks').textContent = loan.remarks;
+            }
+
+            // Gold Photos
+            if (loan.goldPhotoUrls) {
+                const photos = loan.goldPhotoUrls.split(',').filter(u => u.trim());
+                if (photos.length > 0) {
+                    document.getElementById('dt-gold-photos-section').style.display = 'block';
+                    const container = document.getElementById('dt-gold-photos');
+                    container.innerHTML = photos.map(url => `<img src="${url}" class="photo-thumb" alt="Gold Photo" onclick="openModal('${url}')">`).join('');
+                }
+            }
+
+            // Documents
+            if (loan.documentUrls) {
+                const docs = loan.documentUrls.split(',').filter(u => u.trim());
+                if (docs.length > 0) {
+                    document.getElementById('dt-docs-section').style.display = 'block';
+                    const container = document.getElementById('dt-docs');
+                    container.innerHTML = docs.map(url => `<img src="${url}" class="photo-thumb" alt="Document" onclick="openModal('${url}')">`).join('');
+                }
+            }
+
+            // Payment History
+            const payments = await fetchApi(`/api/payments/loan/${loanId}`);
+            const tbody = document.getElementById('paymentsTable');
+            if (!payments || payments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:36px;color:#94a3b8;">No payments found.</td></tr>`;
+            } else {
+                tbody.innerHTML = payments.map(p => {
+                    const pid = 'PAY' + String(p.id).padStart(9, '0');
+                    const isPrincipal = p.type === 'PRINCIPAL' || p.type === 'FULL_CLOSURE';
+                    const typeBadge = isPrincipal ? `<span class="badge-active" style="background:#e0e7ff;color:#4f46e5;">${p.type}</span>` : `<span class="badge-active" style="background:#fef3c7;color:#d97706;">${p.type}</span>`;
+                    return `<tr>
+                        <td style="font-weight:600;color:#c5a059;">${pid}</td>
+                        <td style="font-weight:700;color:#1e293b;">${formatCurrency(p.amount)}</td>
+                        <td>${typeBadge}</td>
+                        <td><span style="display:inline-block;padding:2px 8px;border-radius:6px;background:#f1f5f9;font-size:0.75rem;font-weight:600;color:#64748b;">${p.paymentMode || 'CASH'}</span></td>
+                        <td style="color:#64748b;font-weight:500;">${new Date(p.paymentDate || Date.now()).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})}</td>
+                    </tr>`;
+                }).join('');
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Error loading loan details");
+        }
+    }
+
+    // Custom Confirm/Alert logic
+    const ccModal = document.getElementById('customConfirm');
+    const ccIcon = document.getElementById('ccIcon');
+    const ccTitle = document.getElementById('ccTitle');
+    const ccMsg = document.getElementById('ccMsg');
+    const ccActions = document.getElementById('ccActions');
+    const ccYesBtn = document.getElementById('ccYesBtn');
+    const ccNoBtn = document.getElementById('ccNoBtn');
+    let confirmCallback = null;
+
+    function showCustomModal(type, title, msg, callback) {
+        ccTitle.textContent = title;
+        ccMsg.textContent = msg;
+        
+        if (type === 'confirm') {
+            ccIcon.className = 'confirm-icon';
+            ccIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+            ccActions.innerHTML = '';
+            ccActions.appendChild(ccNoBtn);
+            ccActions.appendChild(ccYesBtn);
+            ccNoBtn.textContent = 'Cancel';
+            ccYesBtn.textContent = 'Yes, Record';
+            ccYesBtn.style.display = 'flex';
+        } else if (type === 'success') {
+            ccIcon.className = 'confirm-icon success';
+            ccIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+            ccActions.innerHTML = '';
+            ccActions.appendChild(ccNoBtn);
+            ccNoBtn.textContent = 'OK';
+        } else {
+            ccIcon.className = 'confirm-icon error';
+            ccIcon.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+            ccActions.innerHTML = '';
+            ccActions.appendChild(ccNoBtn);
+            ccNoBtn.textContent = 'OK';
+        }
+
+        confirmCallback = callback;
+        ccModal.classList.add('active');
+    }
+
+    function closeCustomModal() {
+        ccModal.classList.remove('active');
+    }
+
+    ccNoBtn.addEventListener('click', () => {
+        closeCustomModal();
+    });
+
+    ccYesBtn.addEventListener('click', () => {
+        closeCustomModal();
+        if (confirmCallback) confirmCallback();
+    });
+
+
+    document.getElementById('paymentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const amt = document.getElementById('pAmount').value;
+        const type = document.getElementById('pType').value;
+
+        showCustomModal(
+            'confirm',
+            'Record Payment',
+            `Are you sure you want to record an offline payment of ${formatCurrency(amt)} for this loan?`,
+            async () => {
+                const btn = document.querySelector('#paymentForm button[type="submit"]');
+                const origText = btn.innerHTML;
+                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Processing...`;
+                btn.disabled = true;
+
+                try {
+                    await fetchApi(`/api/payments/loan/${loanId}`, {
+                        method: 'POST',
+                        body: JSON.stringify({ amount: amt, type: type })
+                    });
+                    
+                    showCustomModal('success', 'Payment Recorded!', `The payment of ${formatCurrency(amt)} has been successfully logged.`);
+                    loadData();
+                    document.getElementById('pAmount').value = '';
+                } catch (error) {
+                    showCustomModal('error', 'Payment Failed', error.message);
+                } finally {
+                    btn.innerHTML = origText;
+                    btn.disabled = false;
+                }
+            }
+        );
+    });
+
+    loadData();
+});
+</script>
+</body>
+</html>
+
+
+
+
+

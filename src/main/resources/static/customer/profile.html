@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <title>Trust Ledger - Profile</title>
+    <link rel="stylesheet" href="../css/customer.css">
+</head>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./loans.html"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>My Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <a href="./profile.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1p)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2p)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3p)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <rect x="36" y="37" width="32" height="3.5" rx="2" fill="rgba(255,255,255,0.22)"/>
+            <rect x="26" y="57" width="36" height="3.5" rx="2" fill="rgba(255,255,255,0.18)"/>
+            <defs>
+                <linearGradient id="gb1p" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2p" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3p" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+    <div class="cp-sidebar-copyright">© 2025 Trust Ledger. All rights reserved.</div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong> 👋</div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Customer</div></div>
+            <svg style="width:14px;height:14px;stroke:#94a3b8;fill:none;stroke-width:2;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <p class="cp-page-title">Profile</p>
+        <p class="cp-page-sub">Manage your account information and preferences</p>
+
+        <!-- Profile Hero -->
+        <div class="cp-profile-hero" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;">
+            <div class="cp-avatar-wrap" id="profile-avatar" style="width:80px;height:80px;margin-bottom:16px;">
+                <svg style="width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <div id="profile-phone" style="display:none;"></div>
+                <div class="cp-badge-active" style="margin-bottom:4px;">Active Customer</div>
+                <div class="cp-profile-since">
+                    <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>Member since <strong id="profile-since">—</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="cp-info-section">
+            <div class="cp-info-head">
+                <div class="cp-info-head-left">
+                    <svg style="width:18px;height:18px;stroke:var(--cp-gold);fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Personal Information
+                </div>
+                <svg style="width:18px;height:18px;stroke:#94a3b8;fill:none;stroke-width:2;" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            </div>
+            <div class="cp-info-body">
+                <div class="cp-info-grid">
+                    <div class="cp-info-field">
+                        <label>Full Name</label>
+                        <div class="cp-info-value" id="f-name">—</div>
+                    </div>
+                    <div class="cp-info-field">
+                        <label>Email Address</label>
+                        <div class="cp-info-value" id="f-email">—</div>
+                    </div>
+                    <div class="cp-info-field">
+                        <label>Phone Number</label>
+                        <div class="cp-info-value" id="f-phone">—</div>
+                    </div>
+                    <div class="cp-info-field">
+                        <label>Aadhaar Number</label>
+                        <div class="cp-info-value" id="f-aadhaar">—</div>
+                    </div>
+                    <div class="cp-info-field" style="grid-column: span 2;">
+                        <label>Address</label>
+                        <div class="cp-info-value" id="f-address">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="cp-info-section">
+            <div class="cp-info-head" style="cursor:default;">
+                <div class="cp-info-head-left">
+                    <svg style="width:18px;height:18px;stroke:var(--cp-gold);fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Security Settings
+                </div>
+            </div>
+            <div style="padding: 4px 0 8px; border-top: none;">
+                <p style="padding: 0 24px 14px; font-size:13px; color:var(--cp-text-muted);">Keep your account secure by updating your password regularly.</p>
+                <a href="#" class="cp-security-item" onclick="document.getElementById('changePwModal').classList.add('active'); return false;" style="display:flex; align-items:center; padding:16px 24px; text-decoration:none; border-top:1px solid #e2e8f0; transition:background 0.2s; cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                    <div class="cp-security-icon" style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#d97706;display:flex;align-items:center;justify-content:center;margin-right:16px;">
+                        <svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <div class="cp-security-text" style="display:flex;flex-direction:column;gap:4px;">
+                        <h4 style="margin:0;font-size:15px;color:#1e293b;font-weight:600;">Change Password</h4>
+                        <p style="margin:0;font-size:13px;color:#64748b;">Update your account password</p>
+                    </div>
+                    <svg style="width:16px;height:16px;stroke:#94a3b8;fill:none;stroke-width:2;margin-left:auto;" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
+</main>
+
+<!-- Change Password Modal -->
+<div id="changePwModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:all 0.3s;">
+    <div style="background:white;border-radius:16px;padding:36px;width:100%;max-width:420px;box-shadow:0 25px 50px rgba(0,0,0,0.15);position:relative;transform:scale(0.9);transition:transform 0.3s;">
+        <button type="button" onclick="document.getElementById('changePwModal').classList.remove('active')" style="position:absolute;top:14px;right:14px;background:#f1f5f9;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:18px;color:#64748b;display:flex;align-items:center;justify-content:center;">×</button>
+        <h3 style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:6px;">Change Password</h3>
+        <p style="font-size:13px;color:#64748b;margin-bottom:24px;">Enter your new password below.</p>
+        <form id="changePwForm">
+            <div style="margin-bottom:14px;">
+                <label style="font-size:12px;color:#64748b;display:block;margin-bottom:6px;">New Password</label>
+                <input type="password" id="newPw" placeholder="At least 6 characters" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;" required>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="font-size:12px;color:#64748b;display:block;margin-bottom:6px;">Confirm Password</label>
+                <input type="password" id="confirmPw" placeholder="Re-enter password" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;" required>
+            </div>
+            <p id="pwError" style="color:#ef4444;font-size:13px;display:none;margin-bottom:12px;"></p>
+            <button type="submit" id="pwBtn" style="width:100%;padding:12px;background:#c5a059;color:white;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">Update Password</button>
+        </form>
+    </div>
+</div>
+<!-- Success Modal -->
+<div id="successModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;visibility:hidden;transition:all 0.3s;">
+    <div style="background:#fff;width:100%;max-width:400px;border-radius:12px;padding:30px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.1);transform:scale(0.95);transition:all 0.3s;position:relative;">
+        <div style="width:60px;height:60px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg style="width:30px;height:30px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 style="margin:0 0 8px;font-size:20px;color:#1e293b;">Success!</h3>
+        <p style="margin:0 0 24px;font-size:15px;color:#64748b;" id="successMsg">Password updated successfully!</p>
+        <button onclick="document.getElementById('successModal').classList.remove('active')" style="padding:11px 20px;width:100%;border-radius:8px;font-weight:600;font-size:15px;cursor:pointer;background:linear-gradient(135deg, #c5a059, #e8c97a);color:#fff;border:none;">Done</button>
+    </div>
+</div>
+<style>
+#changePwModal.active, #successModal.active { opacity:1 !important; visibility:visible !important; }
+#changePwModal.active > div, #successModal.active > div { transform:scale(1) !important; }
+</style>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    initTopbar();
+    const phone = getPhoneFromToken();
+    document.getElementById('profile-phone').textContent = phone || '—';
+
+    try {
+        const profile = await fetchApi('/api/customer-portal/profile');
+        if (profile) {
+            if (profile.photoUrl) {
+                document.getElementById('profile-avatar').innerHTML = `<img src="${profile.photoUrl}" alt="Profile Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            }
+            document.getElementById('f-name').textContent = profile.name || '—';
+            document.getElementById('f-email').textContent = profile.email || '—';
+            document.getElementById('f-address').textContent = [profile.addressLine1, profile.city, profile.state, profile.pinCode].filter(Boolean).join(', ') || '—';
+            document.getElementById('f-phone').textContent = profile.phoneNumber || '—';
+            document.getElementById('f-aadhaar').textContent = profile.identityProofNumber || '—';
+            document.getElementById('profile-since').textContent = profile.createdAt
+                ? new Date(profile.createdAt).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})
+                : '—';
+        }
+    } catch(e) { console.error(e); }
+});
+
+document.getElementById('changePwForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errEl = document.getElementById('pwError');
+    const newPw = document.getElementById('newPw').value;
+    const confirmPw = document.getElementById('confirmPw').value;
+    errEl.style.display = 'none';
+
+    if (newPw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
+    if (newPw !== confirmPw) { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return; }
+
+    document.getElementById('pwBtn').disabled = true;
+    document.getElementById('pwBtn').textContent = 'Updating...';
+    try {
+        await fetchApi('/api/customer-portal/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newPassword: newPw })
+        });
+        document.getElementById('changePwModal').classList.remove('active');
+        document.getElementById('changePwForm').reset();
+        document.getElementById('successModal').classList.add('active');
+    } catch(e) {
+        errEl.textContent = 'Failed to update password. Please try again.';
+        errEl.style.display = 'block';
+    }
+    document.getElementById('pwBtn').disabled = false;
+    document.getElementById('pwBtn').textContent = 'Update Password';
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

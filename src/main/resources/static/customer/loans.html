@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <title>Trust Ledger - My Loans</title>
+    <link rel="stylesheet" href="../css/customer.css">
+</head>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./loans.html"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>My Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <a href="./profile.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1l)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2l)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3l)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <rect x="36" y="37" width="32" height="3.5" rx="2" fill="rgba(255,255,255,0.22)"/>
+            <rect x="26" y="57" width="36" height="3.5" rx="2" fill="rgba(255,255,255,0.18)"/>
+            <defs>
+                <linearGradient id="gb1l" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2l" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3l" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+    <div class="cp-sidebar-copyright">© 2025 Trust Ledger. All rights reserved.</div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong> 👋</div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Customer</div></div>
+            <svg style="width:14px;height:14px;stroke:#94a3b8;fill:none;stroke-width:2;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <p class="cp-page-title">My Loans</p>
+        <p class="cp-page-sub">All your gold loan accounts</p>
+
+        <div class="cp-section">
+            <div class="cp-section-head">
+                <h3>All Loans</h3>
+                <span id="loan-count" style="font-size:13px;color:var(--cp-text-muted);">Loading...</span>
+            </div>
+            <table class="cp-table">
+                <thead>
+                    <tr><th>Loan ID</th><th>Amount</th><th>Date</th><th>Status</th><th>Balance (P + I)</th><th>Action</th></tr>
+                </thead>
+                <tbody id="loansBody">
+                    <tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:36px;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
+</main>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    initTopbar();
+    try {
+        const loans = await fetchApi('/api/customer-portal/loans');
+        const tbody = document.getElementById('loansBody');
+        document.getElementById('loan-count').textContent = loans ? loans.length + ' loan(s)' : '0 loans';
+        if (!loans || loans.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:48px;">No loans found</td></tr>';
+            return;
+        }
+        tbody.innerHTML = [...loans].reverse().map(l => {
+            const bal = (l.remainingPrincipal || 0) + (l.totalPendingInterest || 0);
+            const sc = l.status === 'OVERDUE' ? 'badge-overdue' : l.status === 'CLOSED' ? 'badge-closed' : 'badge-active';
+            return `<tr>
+                <td style="font-weight:600;">TLG${String(l.id).padStart(10,'0')}</td>
+                <td>${formatCurrency(l.loanAmount)}</td>
+                <td>${new Date(l.loanDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>
+                <td><span class="cp-badge ${sc}">${l.status.charAt(0)+l.status.slice(1).toLowerCase()}</span></td>
+                <td>${formatCurrency(bal)}</td>
+                <td><a href="./loan-details.html?id=${l.id}" class="cp-view-btn" title="View">
+                    <svg style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </a></td>
+            </tr>`;
+        }).join('');
+    } catch(e) { console.error(e); }
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

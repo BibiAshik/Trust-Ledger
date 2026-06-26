@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="icon" href="../images/favicon.ico">
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Ledger - Loan Details</title>
+    <link rel="stylesheet" href="../css/customer.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        /* ── Page header ── */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+        .page-header h2 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin: 0; }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 9px 18px; background: transparent; border: 1.5px solid #c5a059;
+            color: #c5a059; border-radius: 8px; font-weight: 600; font-size: 0.875rem;
+            text-decoration: none; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-back:hover { background: #c5a059; color: #fff; }
+
+        /* ── Top Info Banner ── */
+        .loan-banner {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 22px 28px;
+            margin-bottom: 22px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr 1fr;
+            gap: 0;
+            align-items: start;
+        }
+        .banner-block { padding: 0 24px; border-right: 1px solid #e9ecef; }
+        .banner-block:first-child { padding-left: 0; }
+        .banner-block:last-child { border-right: none; }
+        .banner-label { font-size: 0.78rem; color: #94a3b8; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .banner-value { font-size: 0.95rem; font-weight: 600; color: #1e293b; }
+        .banner-value.large { font-size: 1.05rem; }
+        .badge-active {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+            background: #dcfce7; color: #16a34a; margin-top: 4px;
+        }
+        .badge-overdue { background: #fee2e2; color: #dc2626; }
+        .badge-closed { background: #f1f5f9; color: #64748b; }
+        .due-highlight { color: #c5a059; font-size: 0.82rem; font-weight: 500; margin-top: 3px; }
+        .date-row { display: flex; align-items: center; gap: 6px; }
+        .date-icon { color: #94a3b8; }
+
+        /* ── Two-column main body ── */
+        .body-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; margin-bottom: 22px; }
+
+        /* ── Cards ── */
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 16px 22px; border-bottom: 1px solid #f1f5f9;
+        }
+        .card-header-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: rgba(197,160,89,0.12);
+            display: flex; align-items: center; justify-content: center;
+            color: #c5a059;
+        }
+        .card-header h3 { font-size: 1rem; font-weight: 700; color: #c5a059; margin: 0; }
+        .card-body { padding: 20px 22px; }
+
+        /* ── Gold Item grid ── */
+        .gold-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+        .gold-cell {
+            padding: 14px 16px;
+            border-right: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .gold-cell:nth-child(3n) { border-right: none; }
+        .gold-cell:nth-last-child(-n+3) { border-bottom: none; }
+        .gold-cell-label { font-size: 0.78rem; color: #94a3b8; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .gold-cell-value { font-size: 0.95rem; font-weight: 600; color: #1e293b; }
+
+        /* ── Gold Photos ── */
+        .photos-header { display: flex; align-items: center; gap: 8px; padding: 14px 22px 10px; border-top: 1px solid #f1f5f9; }
+        .photos-header span { font-size: 0.9rem; font-weight: 600; color: #1e293b; }
+        .photos-grid { padding: 0 22px 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .photo-thumb {
+            width: 90px; height: 90px; border-radius: 10px;
+            object-fit: cover; border: 1.5px solid #e2e8f0;
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .photo-thumb:hover { transform: scale(1.04); }
+
+        /* ── Outstanding Summary ── */
+        .summary-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-bottom: 20px; }
+        .metric-cell { padding: 16px 14px; text-align: center; border-right: 1px solid #f1f5f9; }
+        .metric-cell:last-child { border-right: none; }
+        .metric-label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; }
+        .metric-value { font-size: 1.3rem; font-weight: 700; color: #1e293b; }
+        .metric-value.danger { color: #dc2626; }
+        .metric-value.muted { color: #64748b; }
+
+        /* ── Payment Form ── */
+        .pay-section { border-top: 1px solid #f1f5f9; padding: 18px 22px; }
+        .pay-section h4 { font-size: 0.95rem; font-weight: 700; color: #1e293b; margin: 0 0 14px; }
+        .form-field { margin-bottom: 12px; }
+        .form-field label { font-size: 0.78rem; color: #94a3b8; display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-select, .form-input {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0;
+            border-radius: 8px; font-size: 0.9rem; color: #1e293b;
+            background: #fff; outline: none; transition: border-color 0.2s;
+            appearance: none; -webkit-appearance: none;
+        }
+        .form-select:focus, .form-input:focus { border-color: #c5a059; }
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '▾'; position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%); color: #94a3b8; pointer-events: none;
+        }
+        .pay-now-btn {
+            width: 100%; padding: 13px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #c5a059, #e8c97a);
+            color: #fff; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            gap: 8px; transition: opacity 0.2s; margin-top: 4px;
+        }
+        .pay-now-btn:hover { opacity: 0.9; }
+        .pay-now-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .pay-info-note {
+            margin-top: 12px; padding: 10px 14px;
+            background: #eff6ff; border-radius: 8px;
+            font-size: 0.8rem; color: #3b82f6;
+            display: flex; align-items: flex-start; gap: 6px;
+        }
+        .pay-msg { margin-top: 10px; font-size: 0.875rem; font-weight: 600; text-align: center; }
+
+        /* ── Payment History ── */
+        .history-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+        .history-header { display: flex; align-items: center; gap: 10px; padding: 18px 22px; border-bottom: 1px solid #f1f5f9; }
+        .history-header h3 { font-size: 1rem; font-weight: 700; color: #c5a059; margin: 0; }
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th {
+            background: #f8fafc; text-align: left; padding: 11px 16px;
+            font-size: 0.78rem; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .history-table td { padding: 13px 16px; font-size: 0.875rem; color: #1e293b; border-top: 1px solid #f8fafc; }
+        .history-table tr:hover td { background: #fafbfc; }
+        .badge-success { display: inline-block; padding: 2px 10px; border-radius: 20px; background: #dcfce7; color: #16a34a; font-size: 0.75rem; font-weight: 700; }
+        .view-all-payments {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 15px; border-top: 1px solid #f1f5f9;
+            color: #c5a059; font-weight: 600; font-size: 0.875rem;
+            cursor: pointer; text-decoration: none; transition: background 0.2s;
+            border-radius: 0 0 14px 14px;
+        }
+        .view-all-payments:hover { background: rgba(197,160,89,0.06); }
+
+        /* ── No photos placeholder ── */
+        .no-photos { padding: 14px 22px; color: #94a3b8; font-size: 0.875rem; border-top: 1px solid #f1f5f9; }
+
+        @media (max-width: 900px) {
+            .body-grid { grid-template-columns: 1fr; }
+            .loan-banner { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .banner-block { border-right: none; border-bottom: 1px solid #e9ecef; padding: 0 0 12px; }
+            .banner-block:last-child { border-bottom: none; }
+            .gold-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .main-content { padding: 16px; }
+            .loan-banner { grid-template-columns: 1fr; }
+            .summary-metrics { grid-template-columns: 1fr; }
+            .metric-cell { border-right: none; border-bottom: 1px solid #f1f5f9; }
+        }
+    </style>
+</head>
+<body class="cp-body">
+
+<aside class="cp-sidebar">
+    <div class="cp-logo">
+        <div class="cp-logo-icon"><img src="../images/logo.png" alt="Trust Ledger Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;"></div>
+        <div class="cp-logo-text"><h1>Trust Ledger</h1><p>Gold Loan Management System</p></div>
+    </div>
+    <nav class="cp-nav">
+        <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</a>
+        <a href="./loans.html"><svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>My Loans</a>
+        <a href="./payments.html"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a>
+        <a href="./profile.html"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
+        <div class="nav-divider"></div>
+        <a href="#" class="logout-link" onclick="logout(); return false;"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    </nav>
+    <div class="cp-sidebar-art">
+        <svg width="160" height="90" viewBox="0 0 160 90" fill="none">
+            <ellipse cx="80" cy="85" rx="58" ry="6" fill="rgba(197,160,89,0.12)"/>
+            <rect x="22" y="54" width="116" height="26" rx="5" fill="url(#gb1l)"/>
+            <rect x="32" y="34" width="96" height="24" rx="5" fill="url(#gb2l)"/>
+            <rect x="42" y="16" width="76" height="22" rx="5" fill="url(#gb3l)"/>
+            <rect x="46" y="19" width="28" height="4" rx="2" fill="rgba(255,255,255,0.28)"/>
+            <rect x="36" y="37" width="32" height="3.5" rx="2" fill="rgba(255,255,255,0.22)"/>
+            <rect x="26" y="57" width="36" height="3.5" rx="2" fill="rgba(255,255,255,0.18)"/>
+            <defs>
+                <linearGradient id="gb1l" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c5a059"/><stop offset="50%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#9a7a3f"/></linearGradient>
+                <linearGradient id="gb2l" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8a55e"/><stop offset="50%" stop-color="#ddb95e"/><stop offset="100%" stop-color="#a08040"/></linearGradient>
+                <linearGradient id="gb3l" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4ad5f"/><stop offset="50%" stop-color="#f0d070"/><stop offset="100%" stop-color="#b08a40"/></linearGradient>
+            </defs>
+        </svg>
+    </div>
+    <div class="cp-sidebar-copyright">© 2025 Trust Ledger. All rights reserved.</div>
+</aside>
+
+<main class="cp-main">
+    <div class="cp-topbar">
+        <div class="cp-welcome">Welcome back, <strong id="topbar-phone">—</strong> 👋</div>
+        <div class="cp-user-pill">
+            <div class="cp-user-avatar"><svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="cp-user-info"><div class="phone" id="topbar-phone2">—</div><div class="role">Customer</div></div>
+            <svg style="width:14px;height:14px;stroke:#94a3b8;fill:none;stroke-width:2;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+    </div>
+
+    <div class="cp-content">
+        <div style="max-width: 1100px; margin: 0 auto; width: 100%;">
+            <!-- Page Header -->
+            <div class="page-header">
+            <h2>Loan Details</h2>
+            <a href="./dashboard.html" class="btn-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Top Loan Info Banner -->
+        <div class="loan-banner">
+            <div class="banner-block">
+                <div class="banner-label">Loan ID</div>
+                <div class="banner-value large" id="dt-id">—</div>
+                <div id="dt-status-badge" class="badge-active" style="margin-top:6px;">ACTIVE</div>
+            </div>
+            <div class="banner-block">
+                <div class="banner-label">Loan Date</div>
+                <div class="date-row">
+                    <svg class="date-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span class="banner-value" id="dt-date">—</span>
+                </div>
+                <div class="banner-label" style="margin-top:10px;">Due Date</div>
+                <div class="date-row">
+                    <svg class="date-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span class="banner-value" id="dt-duedate">—</span>
+                </div>
+                <div class="due-highlight" id="dt-due-highlight"></div>
+            </div>
+            <div class="banner-block">
+                <div class="banner-label">Loan Amount (Principal)</div>
+                <div class="banner-value large" id="dt-principal">—</div>
+                <div class="banner-label" style="margin-top:10px;">Interest Rate</div>
+                <div class="banner-value" id="dt-rate-display">—</div>
+            </div>
+            <div class="banner-block">
+                <div class="banner-label">Loan Period</div>
+                <div class="banner-value large" id="dt-period">—</div>
+                <div class="banner-label" style="margin-top:10px;">Loan Status</div>
+                <div id="dt-status-badge2" class="badge-active">ACTIVE</div>
+            </div>
+        </div>
+
+        <!-- Main body: two columns -->
+        <div class="body-grid">
+
+            <!-- LEFT: Gold Item Details + Gold Photos -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <h3>Gold Item Details</h3>
+                    </div>
+                    <div class="gold-grid" id="goldGrid">
+                        <div class="gold-cell">
+                            <div class="gold-cell-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                                Ornament Type
+                            </div>
+                            <div class="gold-cell-value" id="dt-item">—</div>
+                        </div>
+                        <div class="gold-cell">
+                            <div class="gold-cell-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+                                Number of Items
+                            </div>
+                            <div class="gold-cell-value" id="dt-numitems">—</div>
+                        </div>
+                        <div class="gold-cell">
+                            <div class="gold-cell-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                                Gross Weight
+                            </div>
+                            <div class="gold-cell-value" id="dt-weight">—</div>
+                        </div>
+                        <div class="gold-cell">
+                            <div class="gold-cell-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                                Purity
+                            </div>
+                            <div class="gold-cell-value" id="dt-purity">—</div>
+                        </div>
+                        <div class="gold-cell" style="grid-column: span 2;">
+                            <div class="gold-cell-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                Estimated Value
+                            </div>
+                            <div class="gold-cell-value" id="dt-estvalue">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Gold Photos -->
+                    <div id="dt-photos-section" style="display:none;">
+                        <div class="photos-header">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <span>Gold Photos</span>
+                        </div>
+                        <div class="photos-grid" id="dt-photos"></div>
+                    </div>
+
+                    <!-- Remarks (if any) -->
+                    <div id="dt-remarks-section" style="display:none; padding:14px 22px; border-top:1px solid #f1f5f9;">
+                        <div style="font-size:0.82rem; color:#94a3b8; margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;">Remarks</div>
+                        <p id="dt-remarks" style="background:#f8fafc; padding:10px 14px; border-radius:8px; font-size:0.875rem; color:#475569; margin:0;"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Outstanding Summary + Payment -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <h3>Outstanding Summary</h3>
+                    </div>
+                    <div class="summary-metrics">
+                        <div class="metric-cell">
+                            <div class="metric-label">Remaining Principal</div>
+                            <div class="metric-value" id="dt-rem-principal">—</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-label">Pending Interest</div>
+                            <div class="metric-value muted" id="dt-pend-interest">—</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-label">Total Due</div>
+                            <div class="metric-value danger" id="dt-total-due">—</div>
+                        </div>
+                    </div>
+
+                    <div class="pay-section" id="pay-section">
+                        <h4>Make a Payment</h4>
+                        <div class="form-field">
+                            <label>Select Payment Type</label>
+                            <div class="select-wrapper">
+                                <select id="pay-type" class="form-select">
+                                    <option value="INTEREST">Pay Interest Only</option>
+                                    <option value="PRINCIPAL">Pay Principal</option>
+                                    <option value="FULL_CLOSURE">Full Closure</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label>Enter Amount (₹)</label>
+                            <input type="number" id="pay-amount" class="form-input" placeholder="0.00">
+                        </div>
+                        <button type="button" id="pay-btn" class="pay-now-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            Pay Now
+                        </button>
+                        <div class="pay-info-note">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Paying interest regularly helps you avoid late fees and keeps your loan active.
+                        </div>
+                        <p id="pay-msg" class="pay-msg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="history-card">
+            <div class="history-header">
+                <div class="card-header-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </div>
+                <h3>Payment History</h3>
+            </div>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Payment Type</th>
+                        <th>Amount (₹)</th>
+                        <th>Payment Mode</th>
+                        <th>Receipt No.</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr><td colspan="6" style="text-align:center;padding:36px;color:#94a3b8;">Loading...</td></tr>
+                </tbody>
+            </table>
+            <a href="./payments.html" class="view-all-payments">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                View All Payments
+            </a>
+        </div>
+        </div> <!-- Close max-width wrapper -->
+    </div>
+    <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
+</main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/utils.js"></script>
+    <script>
+        let currentLoanId = null;
+
+        function setBadge(el, status) {
+            el.textContent = status;
+            el.className = status === 'ACTIVE' ? 'badge-active'
+                         : status === 'CLOSED' ? 'badge-closed'
+                         : 'badge-overdue';
+        }
+
+        function monthsBetween(d1, d2) {
+            const months = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
+            return months;
+        }
+
+        async function loadLoanDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) return;
+            currentLoanId = id;
+
+            const loan = await fetchApi('/api/customer-portal/loans/' + id);
+            if (!loan) return;
+
+            // --- Top banner ---
+            document.getElementById('dt-id').textContent = 'TLG-' + String(loan.id).padStart(8, '0');
+            setBadge(document.getElementById('dt-status-badge'), loan.status);
+            setBadge(document.getElementById('dt-status-badge2'), loan.status);
+
+            const loanDateObj = loan.loanDate ? new Date(loan.loanDate) : null;
+            const dueDateObj  = loan.dueDate  ? new Date(loan.dueDate)  : null;
+
+            document.getElementById('dt-date').textContent = loanDateObj
+                ? loanDateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                : '—';
+            document.getElementById('dt-duedate').textContent = dueDateObj
+                ? dueDateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                : '—';
+
+            // "In X Months" highlight
+            if (dueDateObj && loan.status === 'ACTIVE') {
+                const m = monthsBetween(new Date(), dueDateObj);
+                if (m > 0) {
+                    document.getElementById('dt-due-highlight').textContent = `(In ${m} Month${m !== 1 ? 's' : ''})`;
+                } else if (m <= 0) {
+                    document.getElementById('dt-due-highlight').textContent = 'Overdue';
+                    document.getElementById('dt-due-highlight').style.color = '#dc2626';
+                }
+            }
+
+            document.getElementById('dt-principal').textContent = formatCurrency(loan.loanAmount);
+            document.getElementById('dt-rate-display').textContent = (loan.interestPercentage || 0) + '% per month';
+            document.getElementById('dt-period').textContent = loan.loanPeriod
+                ? loan.loanPeriod.charAt(0).toUpperCase() + loan.loanPeriod.slice(1)
+                : '—';
+
+            // --- Gold Item Details ---
+            document.getElementById('dt-item').textContent     = loan.itemType || '—';
+            document.getElementById('dt-numitems').textContent = loan.numberOfItems || '—';
+            document.getElementById('dt-weight').textContent   = (loan.grossWeight || loan.weight || 0) + ' g';
+            document.getElementById('dt-purity').textContent   = loan.purity || '—';
+            document.getElementById('dt-estvalue').textContent = loan.estimatedValue ? formatCurrency(loan.estimatedValue) : '—';
+
+            // Remarks
+            if (loan.remarks) {
+                document.getElementById('dt-remarks-section').style.display = 'block';
+                document.getElementById('dt-remarks').textContent = loan.remarks;
+            }
+
+            // Gold Photos — show all as thumbnails, click to open full size
+            if (loan.goldPhotoUrls) {
+                const photoUrls = loan.goldPhotoUrls.split(',').filter(u => u.trim());
+                if (photoUrls.length > 0) {
+                    document.getElementById('dt-photos-section').style.display = 'block';
+                    const container = document.getElementById('dt-photos');
+                    container.innerHTML = '';
+                    photoUrls.forEach((url, i) => {
+                        const img = document.createElement('img');
+                        img.src = url.trim();
+                        img.alt = 'Gold Photo ' + (i + 1);
+                        img.className = 'photo-thumb';
+                        img.addEventListener('click', () => window.open(url.trim(), '_blank'));
+                        container.appendChild(img);
+                    });
+                }
+            }
+
+            // --- Outstanding Summary ---
+            const remPrincipal = loan.remainingPrincipal || 0;
+            const pendInterest = loan.totalPendingInterest || 0;
+            const totalDue     = remPrincipal + pendInterest;
+
+            document.getElementById('dt-rem-principal').textContent = formatCurrency(remPrincipal);
+            document.getElementById('dt-pend-interest').textContent = formatCurrency(pendInterest);
+            document.getElementById('dt-total-due').textContent     = formatCurrency(totalDue);
+
+            // Pre-fill payment amount
+            document.getElementById('pay-amount').value = pendInterest > 0 ? pendInterest : totalDue;
+
+            if (loan.status === 'CLOSED') {
+                document.getElementById('pay-section').style.display = 'none';
+            }
+
+            // --- Payment History ---
+            const payments = await fetchApi('/api/customer-portal/loans/' + id + '/payments');
+            const tbody = document.getElementById('historyTableBody');
+            if (!payments || payments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:36px;color:#94a3b8;">No payments recorded yet.</td></tr>';
+            } else {
+                tbody.innerHTML = payments.map((p, i) => {
+                    const date = new Date(p.paymentDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const rcpt = 'RCPT-' + String(i + 1).padStart(4, '0');
+                    const typeLabel = p.type === 'INTEREST' ? 'Interest Payment'
+                                    : p.type === 'PRINCIPAL' ? 'Principal Payment'
+                                    : p.type === 'FULL_CLOSURE' ? 'Full Closure'
+                                    : p.type;
+                    return `<tr>
+                        <td>${date}</td>
+                        <td>${typeLabel}</td>
+                        <td style="font-weight:600;">${formatCurrency(p.amount)}</td>
+                        <td>${p.paymentMode || 'Cash'}</td>
+                        <td style="color:#94a3b8;font-size:0.82rem;">${rcpt}</td>
+                        <td><span class="badge-success">Success</span></td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        document.getElementById('pay-type').addEventListener('change', (e) => {
+            const val = e.target.value;
+            const pendIntStr  = document.getElementById('dt-pend-interest').textContent.replace(/[^0-9.]+/g, '');
+            const totalDueStr = document.getElementById('dt-total-due').textContent.replace(/[^0-9.]+/g, '');
+            if (val === 'INTEREST') {
+                document.getElementById('pay-amount').value = parseFloat(pendIntStr) || 0;
+                document.getElementById('pay-amount').disabled = false;
+            } else if (val === 'FULL_CLOSURE') {
+                document.getElementById('pay-amount').value = parseFloat(totalDueStr) || 0;
+                document.getElementById('pay-amount').disabled = true;
+            } else {
+                document.getElementById('pay-amount').value = '';
+                document.getElementById('pay-amount').disabled = false;
+            }
+        });
+
+        document.getElementById('pay-btn').addEventListener('click', async () => {
+            const amount = parseFloat(document.getElementById('pay-amount').value);
+            const type   = document.getElementById('pay-type').value;
+            const msgEl  = document.getElementById('pay-msg');
+
+            if (!amount || amount <= 0) {
+                msgEl.textContent = 'Please enter a valid amount.';
+                msgEl.style.color = '#dc2626';
+                return;
+            }
+
+            msgEl.textContent = 'Processing...';
+            msgEl.style.color = '#3b82f6';
+            document.getElementById('pay-btn').disabled = true;
+
+            try {
+                const orderResp = await fetchApi('/api/payment/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, loanId: currentLoanId, type })
+                });
+
+                if (!orderResp || !orderResp.orderId) throw new Error('Failed to create order');
+
+                const options = {
+                    key: orderResp.keyId,
+                    amount: orderResp.amount,
+                    currency: 'INR',
+                    name: 'Trust Ledger',
+                    description: 'Loan Repayment',
+                    order_id: orderResp.orderId,
+                    handler: async (response) => {
+                        msgEl.textContent = 'Verifying payment...';
+                        try {
+                            const verifyResp = await fetchApi('/api/payment/verify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    loanId: currentLoanId, amount, type
+                                })
+                            });
+                            if (verifyResp && verifyResp.status === 'success') {
+                                msgEl.textContent = '✓ Payment Successful!';
+                                msgEl.style.color = '#16a34a';
+                                setTimeout(() => window.location.reload(), 1500);
+                            } else {
+                                throw new Error('Verification failed');
+                            }
+                        } catch {
+                            msgEl.textContent = 'Payment verification failed. Contact admin.';
+                            msgEl.style.color = '#dc2626';
+                            document.getElementById('pay-btn').disabled = false;
+                        }
+                    },
+                    prefill: { name: 'Customer', contact: '9999999999' },
+                    theme: { color: '#c5a059' }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', (r) => {
+                    msgEl.textContent = 'Payment failed: ' + r.error.description;
+                    msgEl.style.color = '#dc2626';
+                    document.getElementById('pay-btn').disabled = false;
+                });
+                rzp.open();
+
+            } catch (err) {
+                msgEl.textContent = 'Error initiating payment.';
+                msgEl.style.color = '#dc2626';
+                document.getElementById('pay-btn').disabled = false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTopbar();
+            loadLoanDetails();
+        });
+    </script>
+</body>
+</html>
