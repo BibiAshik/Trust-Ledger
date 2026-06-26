@@ -21,6 +21,11 @@ public class CustomerController {
         return customerService.getAllCustomers();
     }
 
+    @GetMapping("/search")
+    public List<Customer> searchCustomers(@RequestParam String query) {
+        return customerService.searchCustomers(query);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
         Optional<Customer> customer = customerService.getCustomerById(id);
@@ -30,10 +35,5 @@ public class CustomerController {
     @PostMapping
     public Customer createCustomer(@RequestBody Customer customer) {
         return customerService.saveCustomer(customer);
-    }
-    
-    @GetMapping("/search")
-    public List<Customer> searchCustomers(@RequestParam String query) {
-        return customerService.searchCustomers(query);
     }
 }
