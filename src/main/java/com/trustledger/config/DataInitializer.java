@@ -18,6 +18,7 @@ public class DataInitializer {
                 user.setUsername("admin");
                 user.setPassword(passwordEncoder.encode("admin"));
                 user.setRole("ROLE_ADMIN");
+                user.setEmail("admin@trustledger.com"); // Update this to your real email
                 userRepository.save(user);
             }
         };
