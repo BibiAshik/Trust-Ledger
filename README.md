@@ -35,7 +35,7 @@ Trust Ledger is a comprehensive, full-stack web application built to manage oper
 ## Technologies Used
 
 ### Backend
-- **Java 21**
+- **Java 17**
 - **Spring Boot 3.2.x** (Spring MVC, Spring Data JPA)
 - **Spring Security + JWT**
 - **MySQL** (Relational Database)
@@ -63,7 +63,9 @@ Trust Ledger is a comprehensive, full-stack web application built to manage oper
 3. Ensure Maven dependencies are downloaded and synced.
 4. Run the `TrustLedgerApplication.java` main class.
 5. The application will start on port `8080`.
-6. Open your web browser and navigate to: `http://localhost:8080`
+6. Open your web browser and navigate to: [http://localhost:8080](http://localhost:8080)
+   - **Shop Owner Login:** [http://localhost:8080/shop-owner/shop-login.html](http://localhost:8080/shop-owner/shop-login.html)
+   - **Customer Login:** [http://localhost:8080/customer/customer-login.html](http://localhost:8080/customer/customer-login.html)
 
 ## Login Details
 
