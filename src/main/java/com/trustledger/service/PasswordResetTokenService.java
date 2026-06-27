@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class PasswordResetService {
+public class PasswordResetTokenService {
 
     @Autowired
     private PasswordResetTokenRepository tokenRepository;
@@ -43,16 +43,17 @@ public class PasswordResetService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    // ============================
+    // MODERATE: Initiate Reset
+    // ============================
     @Transactional
     public boolean initiateReset(String email) {
         String userType = null;
 
-        // Check if it's the admin user
         User adminUser = userRepository.findByEmail(email);
         if (adminUser != null) {
             userType = "ADMIN";
         } else {
-            // Check if it's a customer
             Optional<Customer> customer = customerRepository.findByEmail(email);
             if (customer.isPresent()) {
                 userType = "CUSTOMER";
@@ -60,14 +61,11 @@ public class PasswordResetService {
         }
 
         if (userType == null) {
-            // Don't reveal whether the email exists — silently return true for security
             return true;
         }
 
-        // Delete any existing unused tokens for this email
         tokenRepository.deleteByEmail(email);
 
-        // Create new token
         PasswordResetToken token = new PasswordResetToken();
         token.setToken(UUID.randomUUID().toString());
         token.setEmail(email);
@@ -83,7 +81,9 @@ public class PasswordResetService {
         return true;
     }
 
-
+    // ============================
+    // TOUGH: Reset Password
+    // ============================
     @Transactional
     public boolean resetPassword(String tokenStr, String newPassword) {
         Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(tokenStr);
@@ -119,6 +119,9 @@ public class PasswordResetService {
         return true;
     }
 
+    // ============================
+    // TOUGH / EXTERNAL: Send Email
+    // ============================
     private void sendResetEmail(String toEmail, String token) {
         String resetLink = baseUrl + "/shop-owner/reset-password.html?token=" + token;
         SimpleMailMessage message = new SimpleMailMessage();

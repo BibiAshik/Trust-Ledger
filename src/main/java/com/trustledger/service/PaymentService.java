@@ -36,6 +36,11 @@ public class PaymentService {
         return paymentRepository.findByLoanIdOrderByPaymentDateDesc(loanId);
     }
 
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Payment not found"));
+    }
+
     @Transactional
     public Payment makePayment(Long loanId, Double amount, PaymentType type) {
         if (amount == null || amount <= 0) {
@@ -54,14 +59,36 @@ public class PaymentService {
         
         if (type == PaymentType.INTEREST) {
             double currentPending = loan.getTotalPendingInterest() != null ? loan.getTotalPendingInterest() : 0.0;
-            double remaining = currentPending - amount;
-            if(remaining < 0) remaining = 0.0;
-            loan.setTotalPendingInterest(remaining);
+            double remainingInterest = currentPending - amount;
+            
+            if (remainingInterest < 0) {
+                // Overpaid interest: Apply the excess amount towards the principal
+                loan.setTotalPendingInterest(0.0);
+                double excessAmount = Math.abs(remainingInterest);
+                
+                double currentPrincipal = loan.getRemainingPrincipal() != null ? loan.getRemainingPrincipal() : 0.0;
+                double newPrincipal = currentPrincipal - excessAmount;
+                if (newPrincipal < 0) newPrincipal = 0.0;
+                loan.setRemainingPrincipal(newPrincipal);
+            } else {
+                loan.setTotalPendingInterest(remainingInterest);
+            }
         } else if (type == PaymentType.PRINCIPAL) {
             double currentPrincipal = loan.getRemainingPrincipal() != null ? loan.getRemainingPrincipal() : 0.0;
-            double remaining = currentPrincipal - amount;
-            if(remaining < 0) remaining = 0.0;
-            loan.setRemainingPrincipal(remaining);
+            double remainingPrincipal = currentPrincipal - amount;
+            
+            if (remainingPrincipal < 0) {
+                // Overpaid principal: Apply the excess amount towards pending interest
+                loan.setRemainingPrincipal(0.0);
+                double excessAmount = Math.abs(remainingPrincipal);
+                
+                double currentPending = loan.getTotalPendingInterest() != null ? loan.getTotalPendingInterest() : 0.0;
+                double newPending = currentPending - excessAmount;
+                if (newPending < 0) newPending = 0.0;
+                loan.setTotalPendingInterest(newPending);
+            } else {
+                loan.setRemainingPrincipal(remainingPrincipal);
+            }
         } else if (type == PaymentType.FULL_CLOSURE) {
             loan.setRemainingPrincipal(0.0);
             loan.setTotalPendingInterest(0.0);
