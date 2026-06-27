@@ -1,40 +1,51 @@
-# Trust Ledger - Gold Loan Management System
+<div align="center">
+  <img src="src/main/resources/static/images/logo.png" alt="Trust Ledger Logo" width="200"/>
+  <h1>Trust Ledger - Gold Loan Management System</h1>
+</div>
 
-Trust Ledger is a comprehensive, realistic full-stack web application built to manage operations for a small gold finance office or pawn shop. It provides a secure platform to manage customers, track loans, calculate monthly interest, process payments, and identify overdue or auction-eligible accounts.
+Trust Ledger is a comprehensive, full-stack web application built to manage operations for a small gold finance office or pawn shop. It provides a secure platform to manage customers, track loans, calculate monthly interest, process payments, and generate professional PDF receipts.
+
+## Screenshots
+
+### Shop Owner Dashboard
+<!-- Add Dashboard Screenshot Below -->
+![Dashboard Screenshot Placeholder]()
+
+### Customer Loan Details
+<!-- Add Loan Details Screenshot Below -->
+![Loan Details Screenshot Placeholder]()
+
+### Professional PDF Receipt
+<!-- Add PDF Receipt Screenshot Below -->
+![PDF Receipt Screenshot Placeholder]()
 
 ## Features
 
-- **Secure Login**: Access controlled via Spring Security (default credentials provided below).
-- **Dashboard**: Real-time summary of total customers, active/overdue/closed loans, and total collected interest.
-- **Customer Management**: Create and track customer profiles (Name, Phone, Aadhaar, Address).
+- **Secure Login**: Access controlled via Spring Security (JWT Tokens).
+- **Dashboard**: Real-time summary of total customers, active/overdue/closed loans, and collected interest.
+- **Customer Portal**: Customers can log in with their phone number and password to view their active loans and make online payments.
+- **Razorpay Integration**: Customers can pay their interest and principal online seamlessly through Razorpay.
+- **Professional PDF Receipts**: Generates beautiful, brand-colored PDF receipts using iTextPDF upon every successful payment.
+- **Smart Payment Rollover**: Automatically handles overpayments (e.g. paying more interest than owed automatically reduces the principal balance).
 - **Loan Management**: 
   - Manage multiple loans per customer.
   - Record gold item details (Type, Weight, Purity, Estimated Value).
-  - Automatically calculate monthly interest based on remaining principal.
-  - Handle partial interest payments (remaining carries forward).
-  - Handle partial principal payments (interest recalculates).
   - Track loan statuses: `ACTIVE`, `OVERDUE`, `AUCTION_ELIGIBLE`, `CLOSED`.
-- **Loan Renewals & Notes**: Extend loans, add internal notes for customer interactions.
-- **Payment History**: Complete audit trail of all transactions (Interest, Principal, Full Closure).
-- **Printable Receipts**: Generate simple, print-friendly HTML receipts.
-- **Record Safety**: Soft status updates (Closed) instead of permanent record deletion.
 
 ## Technologies Used
 
 ### Backend
 - **Java 21**
-- **Spring Boot 3.5.x** (Spring MVC, Spring Data JPA)
-- **Spring Security** (Session-based authentication)
+- **Spring Boot 3.2.x** (Spring MVC, Spring Data JPA)
+- **Spring Security + JWT**
 - **MySQL** (Relational Database)
-- **Lombok** (Boilerplate reduction)
-- **Maven** (Dependency Management)
+- **iTextPDF** (For generating professional receipts)
 
 ### Frontend
 - **HTML5**
-- **CSS3** (Vanilla CSS, Flexbox, Custom CSS Variables)
-- **JavaScript** (Vanilla JS, Fetch API, DOM manipulation)
-
-By default the app runs with an in-memory H2 database — no setup needed. To use MySQL, set the environment variables below.
+- **CSS3** (Vanilla CSS, custom properties for a premium UI)
+- **JavaScript** (Vanilla JS, Fetch API)
+- **Razorpay JS**
 
 ## Database Setup
 
@@ -43,27 +54,16 @@ By default the app runs with an in-memory H2 database — no setup needed. To us
    ```sql
    CREATE DATABASE trust_ledger;
    ```
-3. For local MySQL, set these environment variables:
-   ```properties
-   DATABASE_URL=jdbc:mysql://localhost:3306/trust_ledger?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-   DATABASE_USERNAME=your_mysql_username
-   DATABASE_PASSWORD=your_mysql_password
-   ```
-
-If these variables are not set, the application uses an embedded H2 database for quick demo/deployment testing.
+3. Update your database configuration securely in your environment or local properties.
 
 ## How to Run the Project
 
 1. Clone or download the repository.
-2. Open the project in your preferred IDE (IntelliJ IDEA, Eclipse, or VS Code).
+2. Open the project in your preferred IDE.
 3. Ensure Maven dependencies are downloaded and synced.
 4. Run the `TrustLedgerApplication.java` main class.
-5. The application will start on port `8080` by default.
+5. The application will start on port `8080`.
 6. Open your web browser and navigate to: `http://localhost:8080`
-
-
-
-
 
 ## Login Details
 
@@ -71,5 +71,3 @@ On first startup, the application automatically provisions a default administrat
 
 - **Username**: `admin`
 - **Password**: `admin`
-
-
