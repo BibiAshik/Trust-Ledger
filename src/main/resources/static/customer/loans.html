@@ -73,37 +73,8 @@
     <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
 </main>
 
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/utils.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    initTopbar();
-    try {
-        const loans = await fetchApi('/api/customer-portal/loans');
-        const tbody = document.getElementById('loansBody');
-        document.getElementById('loan-count').textContent = loans ? loans.length + ' loan(s)' : '0 loans';
-        if (!loans || loans.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:48px;">No loans found</td></tr>';
-            return;
-        }
-        tbody.innerHTML = [...loans].reverse().map(l => {
-            const bal = (l.remainingPrincipal || 0) + (l.totalPendingInterest || 0);
-            const sc = l.status === 'OVERDUE' ? 'badge-overdue' : l.status === 'CLOSED' ? 'badge-closed' : 'badge-active';
-            return `<tr>
-                <td style="font-weight:600;">TLG${String(l.id).padStart(10,'0')}</td>
-                <td>${formatCurrency(l.loanAmount)}</td>
-                <td>${new Date(l.loanDate).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>
-                <td><span class="cp-badge ${sc}">${l.status.charAt(0)+l.status.slice(1).toLowerCase()}</span></td>
-                <td>${formatCurrency(bal)}</td>
-                <td><a href="./loan-details.html?id=${l.id}" class="cp-view-btn" title="View">
-                    <svg style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </a></td>
-            </tr>`;
-        }).join('');
-    } catch(e) { console.error(e); }
-});
-</script>
+<script src="../js/core.js"></script>
+<script src="../js/customer.js"></script>
 </body>
 </html>
 

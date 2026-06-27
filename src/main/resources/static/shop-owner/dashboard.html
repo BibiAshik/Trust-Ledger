@@ -131,87 +131,8 @@
     <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
 </main>
 
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/utils.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    initTopbar();
-
-    try {
-        const summary = await fetchApi('/api/dashboard/summary');
-        
-        // Update stats
-        if (summary) {
-            document.getElementById('stat-customers').textContent = summary.totalCustomers || 0;
-            document.getElementById('stat-loans').textContent = summary.activeLoans || 0;
-            document.getElementById('stat-principal').textContent = formatCurrency(summary.totalDisbursed || 0);
-        }
-
-        // Recent Loans
-        const loansBody = document.getElementById('recentLoansBody');
-        const loans = await fetchApi('/api/loans');
-        
-        let totalPendingInterest = 0;
-        if (loans && loans.length > 0) {
-            loans.forEach(l => {
-                if (l.status !== 'CLOSED') {
-                    totalPendingInterest += (l.totalPendingInterest || 0);
-                }
-            });
-        }
-        document.getElementById('stat-interest').textContent = formatCurrency(totalPendingInterest);
-        if (!loans || loans.length === 0) {
-            loansBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;color:#94a3b8;">No recent loans found.</td></tr>`;
-        } else {
-            loansBody.innerHTML = loans.slice(0, 5).map(l => {
-                const id = 'TLG' + String(l.id).padStart(9, '0');
-                const badgeClass = l.status === 'ACTIVE' ? 'badge-active' : (l.status === 'CLOSED' ? 'badge-closed' : 'badge-overdue');
-                const amt = l.loanAmount || 0;
-                // Mock balance computation for display
-                const balance = l.status === 'CLOSED' ? 0 : amt * 0.45;
-                
-                return `<tr>
-                    <td style="font-weight:500;">${id}</td>
-                    <td>${l.customer ? l.customer.name : 'Unknown'}</td>
-                    <td style="font-weight:600;color:var(--cp-text);">${formatCurrency(amt)}</td>
-                    <td>${new Date(l.loanDate || Date.now()).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})}</td>
-                    <td style="text-align:center;"><span class="cp-badge ${badgeClass}">${l.status || 'Active'}</span></td>
-                    <td style="text-align:right; font-weight:600;">${formatCurrency(balance)}</td>
-                    <td style="text-align:center;">
-                        <a href="loan-details.html?id=${l.id}" class="cp-view-btn"><svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        // Recent Payments
-        const payBody = document.getElementById('recentPaymentsBody');
-        const payments = await fetchApi('/api/payments');
-        if (!payments || payments.length === 0) {
-            payBody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:36px;color:#94a3b8;">No recent payments found.</td></tr>`;
-        } else {
-            payBody.innerHTML = payments.slice(0, 5).map(p => {
-                const id = 'PAY' + String(p.id).padStart(9, '0');
-                // We'll mock the mode and customer name if missing since /api/payments might not join deeply
-                const modeClass = p.paymentType === 'Cash' ? 'ci-green' : (p.paymentType === 'Bank' ? 'ci-blue' : 'ci-purple');
-                return `<tr>
-                    <td style="font-weight:500;">${id}</td>
-                    <td>${p.loan ? (p.loan.customer ? p.loan.customer.name : 'Unknown') : 'Unknown'}</td>
-                    <td style="font-weight:600;color:var(--cp-text);">${formatCurrency(p.amount || 0)}</td>
-                    <td>${new Date(p.paymentDate || Date.now()).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})}</td>
-                    <td style="text-align:center;"><span class="cp-badge" style="background:transparent;border:1px solid #e2e8f0;color:var(--cp-text-muted);">${p.paymentType || 'UPI'}</span></td>
-                </tr>`;
-            }).join('');
-        }
-
-    } catch (e) {
-        console.error(e);
-        document.getElementById('recentLoansBody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--danger);">Error loading data</td></tr>`;
-        document.getElementById('recentPaymentsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;padding:36px;color:var(--danger);">Error loading data</td></tr>`;
-    }
-});
-</script>
+<script src="../js/core.js"></script>
+<script src="../js/shop.js"></script>
 </body>
 </html>
 

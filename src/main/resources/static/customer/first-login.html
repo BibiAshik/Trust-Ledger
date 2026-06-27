@@ -6,6 +6,8 @@
     <link rel="icon" href="../images/favicon.ico">
 <meta charset="UTF-8">
     <title>Trust Ledger - Set New Password</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/shared.css">
     <link rel="stylesheet" href="../css/auth.css">
     <style>
         .stroke-icon { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -42,57 +44,8 @@
         </form>
     </div>
 
-    <script src="../js/api.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/utils.js"></script>
-    <script>
-        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const errEl = document.getElementById('errorMsg');
-            errEl.style.display = 'none';
-
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (newPassword.length < 6) {
-                errEl.textContent = 'Password must be at least 6 characters.';
-                errEl.style.display = 'block';
-                return;
-            }
-
-            if (newPassword !== confirmPassword) {
-                errEl.textContent = 'Passwords do not match.';
-                errEl.style.display = 'block';
-                return;
-            }
-
-            document.getElementById('setBtn').disabled = true;
-            document.getElementById('setBtn').textContent = 'Setting...';
-
-            try {
-                await fetchApi('/api/customer-portal/change-password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ newPassword })
-                });
-
-                // Update stored user so isFirstLogin flag reflects change
-                const stored = sessionStorage.getItem('tl_user');
-                if (stored) {
-                    const user = JSON.parse(stored);
-                    user.isFirstLogin = false;
-                    sessionStorage.setItem('tl_user', JSON.stringify(user));
-                }
-
-                window.location.href = './dashboard.html';
-            } catch (error) {
-                errEl.textContent = 'Failed to update password. Please try again.';
-                errEl.style.display = 'block';
-                document.getElementById('setBtn').disabled = false;
-                document.getElementById('setBtn').textContent = 'Set Password';
-            }
-        });
-    </script>
+    <script src="../js/core.js"></script>
+<script src="../js/customer.js"></script>
 </body>
 
 </html>

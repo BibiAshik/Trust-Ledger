@@ -106,76 +106,8 @@
     <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
 </main>
 
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/utils.js"></script>
-<script>
-let allLoans = [];
-
-async function fetchAllLoans() {
-    try {
-        allLoans = await fetchApi('/api/loans');
-        filterLoans();
-    } catch (e) {
-        console.error(e);
-        document.getElementById('loansTable').innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:30px;">Failed to load loans</td></tr>`;
-    }
-}
-
-function filterLoans() {
-    const tbody = document.getElementById('loansTable');
-    const filter = document.getElementById('statusFilter').value;
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    
-    let filtered = allLoans;
-    
-    if (filter) {
-        filtered = filtered.filter(l => l.status === filter);
-    }
-    
-    if (query) {
-        filtered = filtered.filter(l => {
-            const idStr = 'tlg' + String(l.id).padStart(9, '0');
-            const cName = l.customer && l.customer.name ? l.customer.name.toLowerCase() : '';
-            return idStr.includes(query) || cName.includes(query);
-        });
-    }
-
-    document.getElementById('totalCount').textContent = filtered.length;
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">No loans found</td></tr>`;
-        return;
-    }
-
-    tbody.innerHTML = filtered.map(l => {
-        const id = 'TLG' + String(l.id).padStart(9, '0');
-        const badgeClass = l.status === 'ACTIVE' ? 'badge-active' : (l.status === 'CLOSED' ? 'badge-closed' : 'badge-overdue');
-        
-        return `<tr>
-            <td style="font-weight:500;">${id}</td>
-            <td>${l.customer ? l.customer.name : 'Unknown'}</td>
-            <td>${l.itemType || 'Gold'} (${l.weight}g)</td>
-            <td style="text-align:right; font-weight:600;">${formatCurrency(l.remainingPrincipal || 0)}</td>
-            <td style="text-align:right; color:var(--danger); font-weight:500;">${formatCurrency(l.totalPendingInterest || 0)}</td>
-            <td style="text-align:center;"><span class="cp-badge ${badgeClass}">${l.status || 'ACTIVE'}</span></td>
-            <td style="text-align:center;">
-                <a href="./loan-details.html?id=${l.id}" class="cp-view-btn" title="View Details">
-                    <svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </a>
-            </td>
-        </tr>`;
-    }).join('');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    initTopbar();
-    fetchAllLoans();
-    
-    document.getElementById('searchInput').addEventListener('input', filterLoans);
-    document.getElementById('statusFilter').addEventListener('change', filterLoans);
-});
-</script>
+<script src="../js/core.js"></script>
+<script src="../js/shop.js"></script>
 </body>
 </html>
 

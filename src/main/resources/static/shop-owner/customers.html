@@ -115,82 +115,8 @@
     <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
 </main>
 
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/utils.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    initTopbar();
-    
-    const searchInput = document.getElementById('searchInput');
-    const tbody = document.getElementById('customersBody');
-    
-    let allCustomers = [];
-
-    async function fetchAllCustomers() {
-        try {
-            allCustomers = await fetchApi('/api/customers');
-            filterCustomers('');
-        } catch (e) {
-            console.error(e);
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:30px;">Failed to load customers</td></tr>`;
-        }
-    }
-
-    function filterCustomers(query = '') {
-        let filtered = allCustomers;
-        if (query) {
-            const q = query.toLowerCase();
-            filtered = allCustomers.filter(c => 
-                (c.name && c.name.toLowerCase().includes(q)) || 
-                (c.phoneNumber && c.phoneNumber.includes(q)) ||
-                (c.email && c.email.toLowerCase().includes(q))
-            );
-        }
-        renderTable(filtered);
-        document.getElementById('totalCount').textContent = filtered.length;
-    }
-
-    function renderTable(data) {
-        if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#94a3b8;">No customers found</td></tr>`;
-            return;
-        }
-
-        tbody.innerHTML = data.map(c => {
-            const custId = 'CUST' + String(c.id).padStart(4, '0');
-            // Assuming we don't have total loans and outstanding from backend yet, so we mock or use placeholders.
-            // A real implementation would join tables or use a DTO.
-            const totalLoans = c.totalLoans || 0;
-            const outstanding = c.totalOutstanding || 0;
-            const status = c.status || 'Active'; // Placeholder
-            
-            const badgeClass = status === 'Active' ? 'badge-active' : 'badge-closed';
-            
-            return `<tr>
-                <td style="font-weight:500;">${custId}</td>
-                <td>${c.name}</td>
-                <td>${c.phoneNumber}</td>
-                <td style="color:var(--cp-text-muted);">${c.email || '—'}</td>
-                <td style="text-align:center;">${totalLoans}</td>
-                <td style="text-align:right; font-weight:600;">${totalLoans > 0 ? formatCurrency(outstanding) : '₹0'}</td>
-                <td style="text-align:center;"><span class="cp-badge ${badgeClass}">${status}</span></td>
-                <td style="text-align:center;">
-                    <a href="./customer-details.html?id=${c.id}" class="cp-view-btn" title="View Details">
-                        <svg class="stroke-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </a>
-                </td>
-            </tr>`;
-        }).join('');
-    }
-
-    searchInput.addEventListener('input', (e) => {
-        filterCustomers(e.target.value);
-    });
-
-    fetchAllCustomers();
-});
-</script>
+<script src="../js/core.js"></script>
+<script src="../js/shop.js"></script>
 </body>
 </html>
 

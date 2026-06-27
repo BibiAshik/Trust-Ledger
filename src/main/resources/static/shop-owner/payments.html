@@ -84,6 +84,7 @@
                         <th>Type</th>
                         <th>Date</th>
                         <th style="text-align:center;">Mode</th>
+                        <th style="text-align:center;">Receipt</th>
                     </tr>
                 </thead>
                 <tbody id="paymentsBody">
@@ -100,44 +101,8 @@
     <div class="cp-footer">© 2025 Trust Ledger. All rights reserved.</div>
 </main>
 
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/utils.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    initTopbar();
-    
-    const tbody = document.getElementById('paymentsBody');
-    
-    try {
-        const payments = await fetchApi('/api/payments');
-        
-        if (!payments || payments.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">No payments found</td></tr>`;
-            return;
-        }
-
-        document.getElementById('totalCount').textContent = payments.length;
-
-        tbody.innerHTML = payments.map(p => {
-            const id = 'PAY' + String(p.id).padStart(9, '0');
-            const custName = p.loan && p.loan.customer ? p.loan.customer.name : 'Unknown';
-            return `<tr>
-                <td style="font-weight:500;">${id}</td>
-                <td>${custName}</td>
-                <td style="font-weight:600;color:var(--cp-text);">${formatCurrency(p.amount || 0)}</td>
-                <td style="color:var(--cp-text-muted);">${p.type || 'INTEREST'}</td>
-                <td>${new Date(p.paymentDate || Date.now()).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})}</td>
-                <td style="text-align:center;"><span class="cp-badge" style="background:transparent;border:1px solid #e2e8f0;color:var(--cp-text-muted);">${p.paymentMode || 'CASH'}</span></td>
-            </tr>`;
-        }).join('');
-        
-    } catch (e) {
-        console.error(e);
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--danger);padding:30px;">Failed to load payments</td></tr>`;
-    }
-});
-</script>
+<script src="../js/core.js"></script>
+<script src="../js/shop.js"></script>
 </body>
 </html>
 
