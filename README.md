@@ -8,24 +8,24 @@ Trust Ledger is a comprehensive, full-stack web application built to manage oper
 ## Screenshots
 
 ### Shop Owner Dashboard
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/df15eb0f-7744-48f6-93c4-f3ec0b3fba02" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/df15eb0f-7744-48f6-93c4-f3ec0b3fba02" />
 <br><br>
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/e4fe190a-95c8-498b-a09c-49adc3093e92" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/e4fe190a-95c8-498b-a09c-49adc3093e92" />
 <br><br>
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/ac60a304-30c6-45d4-bead-da79b302d9ca" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/ac60a304-30c6-45d4-bead-da79b302d9ca" />
 <br><br>
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/0839ebbf-48c7-4813-ad4d-f26dee315b30" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/0839ebbf-48c7-4813-ad4d-f26dee315b30" />
 
 
 ### Customer Loan Details
 
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/73c2fecf-5e36-4d67-bb88-02d463453765" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/73c2fecf-5e36-4d67-bb88-02d463453765" />
 <br><br>
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/40485902-7225-480f-aa95-affe8cd2018d" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/40485902-7225-480f-aa95-affe8cd2018d" />
 <br><br>
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/c0cd8c58-0838-4cbd-b977-cf2840e9aa0b" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/c0cd8c58-0838-4cbd-b977-cf2840e9aa0b" />
 <br><br>
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/5cc60338-103c-43b3-a9b8-a16c939fb3eb" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/5cc60338-103c-43b3-a9b8-a16c939fb3eb" />
 
 
 ## Features
