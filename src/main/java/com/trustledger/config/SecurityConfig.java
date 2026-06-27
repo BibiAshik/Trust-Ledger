@@ -91,7 +91,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/customer-portal/**").hasAuthority("ROLE_CUSTOMER")
-                        .requestMatchers("/api/payment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers("/api/payments/create-order", "/api/payments/verify", "/api/payments/*/receipt", "/api/payments/loan/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(
                                 "/api/customers/**",
                                 "/api/loans/**",

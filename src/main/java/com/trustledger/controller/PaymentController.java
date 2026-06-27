@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import com.trustledger.service.PdfService;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +21,34 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
+    @Autowired
+    private PdfService pdfService;
+
     @org.springframework.beans.factory.annotation.Value("${razorpay.key.id}")
     private String razorpayKeyId;
 
     @GetMapping
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
+    }
+
+    @GetMapping("/{id}/receipt")
+    public ResponseEntity<byte[]> downloadReceipt(@PathVariable Long id) {
+        try {
+            Payment payment = paymentService.getPaymentById(id);
+            byte[] pdfBytes = pdfService.generatePaymentReceipt(payment);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "receipt_REC-" + id + ".pdf");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/loan/{loanId}")
