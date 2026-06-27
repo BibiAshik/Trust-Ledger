@@ -721,6 +721,13 @@
     .cp-profile-hero { flex-wrap: wrap; }
     .cp-info-grid { grid-template-columns: 1fr; }
     .cp-table th, .cp-table td { padding: 10px 14px; }
+    .cp-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    .cp-logo-text p { display: none; }
 }
 
 .mobile-menu-toggle {
@@ -728,6 +735,7 @@
     position: fixed;
     top: 14px;
     left: 14px;
+    transition: left 0.3s ease;
     z-index: 1200;
     width: 42px;
     height: 42px;
@@ -780,6 +788,7 @@
 
     body.mobile-sidebar-open .cp-sidebar { transform: translateX(0); }
     body.mobile-sidebar-open .mobile-sidebar-backdrop { display: block; }
+    body.mobile-sidebar-open .mobile-menu-toggle { left: calc(var(--cp-sidebar-width) - 42px - 14px); }
 }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

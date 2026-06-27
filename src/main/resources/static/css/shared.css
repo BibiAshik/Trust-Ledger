@@ -294,6 +294,7 @@ table tr:hover td {
     position: fixed;
     top: 14px;
     left: 14px;
+    transition: left 0.3s ease;
     z-index: 1200;
     width: 42px;
     height: 42px;
@@ -352,6 +353,7 @@ table tr:hover td {
 
     body.mobile-sidebar-open .sidebar { transform: translateX(0); }
     body.mobile-sidebar-open .mobile-sidebar-backdrop { display: block; }
+    body.mobile-sidebar-open .mobile-menu-toggle { left: calc(var(--sidebar-width) - 42px - 14px); }
 
     .main-content {
         width: 100%;
@@ -370,5 +372,12 @@ table tr:hover td {
     .card { min-width: 0; }
     .form-container { padding: 20px; }
     table th, table td { padding: 12px 14px; }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    .cp-logo-text p { display: none; }
 }
 
