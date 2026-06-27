@@ -35,7 +35,7 @@ Trust Ledger is a comprehensive, full-stack web application built to manage oper
 ## Technologies Used
 
 ### Backend
-- **Java 17**
+- **Java 21**
 - **Spring Boot 3.2.x** (Spring MVC, Spring Data JPA)
 - **Spring Security + JWT**
 - **MySQL** (Relational Database)
