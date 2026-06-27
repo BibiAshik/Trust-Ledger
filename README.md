@@ -8,16 +8,19 @@ Trust Ledger is a comprehensive, full-stack web application built to manage oper
 ## Screenshots
 
 ### Shop Owner Dashboard
-<!-- Add Dashboard Screenshot Below -->
-![Dashboard Screenshot Placeholder]()
+<img width="1600" height="899" alt="image" src="https://github.com/user-attachments/assets/df15eb0f-7744-48f6-93c4-f3ec0b3fba02" />
+<img width="1917" height="1012" alt="image" src="https://github.com/user-attachments/assets/e4fe190a-95c8-498b-a09c-49adc3093e92" />
+<img width="1600" height="898" alt="image" src="https://github.com/user-attachments/assets/ac60a304-30c6-45d4-bead-da79b302d9ca" />
+<img width="1600" height="898" alt="image" src="https://github.com/user-attachments/assets/0839ebbf-48c7-4813-ad4d-f26dee315b30" />
+
 
 ### Customer Loan Details
-<!-- Add Loan Details Screenshot Below -->
-![Loan Details Screenshot Placeholder]()
 
-### Professional PDF Receipt
-<!-- Add PDF Receipt Screenshot Below -->
-![PDF Receipt Screenshot Placeholder]()
+<img width="1600" height="898" alt="image" src="https://github.com/user-attachments/assets/73c2fecf-5e36-4d67-bb88-02d463453765" />
+<img width="1600" height="898" alt="image" src="https://github.com/user-attachments/assets/40485902-7225-480f-aa95-affe8cd2018d" />
+<img width="1917" height="1017" alt="image" src="https://github.com/user-attachments/assets/c0cd8c58-0838-4cbd-b977-cf2840e9aa0b" />
+<img width="1600" height="840" alt="image" src="https://github.com/user-attachments/assets/5cc60338-103c-43b3-a9b8-a16c939fb3eb" />
+
 
 ## Features
 
@@ -63,7 +66,7 @@ Trust Ledger is a comprehensive, full-stack web application built to manage oper
 3. Ensure Maven dependencies are downloaded and synced.
 4. Run the `TrustLedgerApplication.java` main class.
 5. The application will start on port `8080`.
-6. Open your web browser and navigate to: [http://localhost:8080](http://localhost:8080)
+6. Open your web browser and navigate to: 
    - **Shop Owner Login:** [http://localhost:8080/shop-owner/shop-login.html](http://localhost:8080/shop-owner/shop-login.html)
    - **Customer Login:** [http://localhost:8080/customer/customer-login.html](http://localhost:8080/customer/customer-login.html)
 
